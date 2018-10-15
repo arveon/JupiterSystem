@@ -40,7 +40,7 @@ void GLManager::init()
 void GLManager::init_objects()
 {
 	triangle = Triangle("../shaders/basic.vert", "../shaders/basic.frag");
-	//square = Square("../shaders/basic.vert", "../shaders/basic.frag");
+	square = Square("../shaders/basic.vert", "../shaders/basic.frag");
 }
 
 void GLManager::loop()
@@ -55,6 +55,26 @@ void GLManager::loop()
 
 void GLManager::render()
 {
+	std::stack<glm::mat4> transf;
+	transf.push(glm::mat4(1.0f));
+	
+	transf.top() = glm::scale(transf.top(),glm::vec3(.5f, .5f, 1.f));
+	transf.top() = glm::rotate(transf.top(), glm::radians(30.f), glm::vec3(0, 0, 1));
+
+	//move square to the left
+	transf.push(transf.top());
+	{
+		transf.top() = glm::translate(transf.top(), glm::vec3(-1.f, 0.f, 0.f));
+		square.set_model_matrix(transf.top());
+	}
+	transf.pop();
+	
+	//move square to the right
+	transf.top() = glm::translate(transf.top(), glm::vec3(1.f, 0.f, 0.f));
+	triangle.set_model_matrix(transf.top());
+
+	
+	square.draw();
 	triangle.draw();
 }
 

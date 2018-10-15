@@ -12,6 +12,8 @@
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <stack>
+
 #include "EventManager.h"
 #include "ShaderManager.h"
 
