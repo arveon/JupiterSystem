@@ -19,6 +19,7 @@
 
 #include "Triangle.h"
 #include "Square.h"
+#include "Cube.h"
 
 class GLManager
 {
@@ -30,6 +31,7 @@ private:
 
 	Drawable triangle;
 	Drawable square;
+	Drawable cube;
 public:
 	GLManager();
 	~GLManager();
