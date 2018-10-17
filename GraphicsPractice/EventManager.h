@@ -26,7 +26,7 @@ public:
 		glfwSetKeyCallback(window, key_callback);
 	}
 	
-	EventManager();
-	~EventManager();
+	EventManager() {}
+	~EventManager() {}
 };
 

@@ -12,7 +12,7 @@ protected:
 	GLuint buffer_id;
 	GLuint model_uniform_id;
 
-	GLuint shader_program;
+	Shader shader_program = NULL;
 
 	float *verts = NULL;
 	int num_verts;
@@ -22,10 +22,11 @@ public:
 	Drawable() {};
 	~Drawable();
 	
-	void init(GLuint shader_program, float* vertices, int num_verts);
+	void init(Shader shader_program, float* vertices, int num_verts);
 
 	
 	void draw();
 	void set_model_matrix(glm::mat4 model_matrix);
+	void set_view_matrix(glm::mat4 view_matrix);
 };
 

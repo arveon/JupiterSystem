@@ -1,6 +1,10 @@
 #include "ShaderManager.h"
 
-GLuint ShaderManager::load_shader(const char* vertex_shader_path, const char* fragment_shader_path)
+
+
+
+
+Shader ShaderManager::load_shader(const char* vertex_shader_path, const char* fragment_shader_path)
 {
 	GLuint v_shader, f_shader;
 
@@ -10,7 +14,7 @@ GLuint ShaderManager::load_shader(const char* vertex_shader_path, const char* fr
 	v_shader = build_shader(GL_VERTEX_SHADER, v_shader_txt);
 	f_shader = build_shader(GL_FRAGMENT_SHADER, f_shader_txt);
 
-	program = glCreateProgram();
+	GLuint program = glCreateProgram();
 
 	glAttachShader(program, v_shader);
 	glAttachShader(program, f_shader);
@@ -27,7 +31,7 @@ GLuint ShaderManager::load_shader(const char* vertex_shader_path, const char* fr
 	glDeleteShader(v_shader);
 	glDeleteShader(f_shader);
 
-	return program;
+	return Shader(program);
 }
 
 GLuint ShaderManager::build_shader(GLenum shaderType, const std::string & shaderText)

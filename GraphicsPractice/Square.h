@@ -28,7 +28,7 @@ private:
 	};
 
 public:
-	Square(GLuint shader_program) : Drawable()
+	Square(Shader shader_program) : Drawable()
 	{
 		this->init(shader_program, square, num_verts);
 	}

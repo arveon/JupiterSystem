@@ -22,7 +22,7 @@ private:
 
 	
 public:
-	Triangle(GLuint shader_program) : Drawable()
+	Triangle(Shader shader_program) : Drawable()
 	{
 		this->init(shader_program, triangle, num_verts);
 	}

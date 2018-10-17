@@ -1,7 +1,7 @@
 #include "Drawable.h"
 
 
-void Drawable::init(GLuint shader_program, float* vertices, int num_verts)
+void Drawable::init(Shader shader_program, float* vertices, int num_verts)
 {
 	this->shader_program = shader_program;
 	verts = vertices;
@@ -21,15 +21,6 @@ void Drawable::load_into_memory()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VALUES_PER_VERT * num_verts, verts, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glUseProgram(shader_program);
-
-	//allocate uniform in shader
-	model_uniform_id = glGetUniformLocation(shader_program, "model");
-	//set initial matrix value to identity matrix
-	glm::mat4 model = glm::mat4(1.f);
-	glUniformMatrix4fv(model_uniform_id, 1, GL_FALSE, &model[0][0]);
-
-	glUseProgram(0);
 }
 
 void Drawable::draw()
@@ -42,12 +33,8 @@ void Drawable::draw()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * VALUES_PER_VERT, (char*)(sizeof(float) * VALUES_PER_VERT / 2));
 
-	glUseProgram(shader_program);
+	glUseProgram(shader_program.get_program_id());
 
-	//glm::mat4 model = glm::mat4(1.f);
-	//model = glm::rotate(model, glm::radians(50.f), glm::vec3(0, 0, 1));
-	//this->set_model_matrix(model);
-	//glUniformMatrix4fv(model_uniform_id, 1, GL_FALSE, &model[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, num_verts);
 	glUseProgram(0);
 
@@ -56,7 +43,10 @@ void Drawable::draw()
 
 void Drawable::set_model_matrix(glm::mat4 model_matrix)
 {
-	glUseProgram(shader_program);
-	glUniformMatrix4fv(model_uniform_id, 1, GL_FALSE, &model_matrix[0][0]);
-	glUseProgram(0);
+	shader_program.set_model_matrix(model_matrix);
+}
+
+void Drawable::set_view_matrix(glm::mat4 view_matrix)
+{
+	shader_program.set_view_matrix(view_matrix);
 }

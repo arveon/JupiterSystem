@@ -3,3 +3,6 @@
 #define NUM_TRIANGLE_VERTS 3
 #define NUM_SQR_VERTS 6
 #define NUM_CUBE_VERTS 36
+
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 480

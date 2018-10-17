@@ -27,11 +27,17 @@ private:
 	GLFWwindow * win;
 
 	EventManager events;
-	ShaderManager shader;
+	Shader shader = NULL;
 
 	Drawable triangle;
 	Drawable square;
 	Drawable cube;
+
+	static GLfloat aspect_ratio;
+
+	static float movement_x;
+	static float movement_z;
+	static float rotation_y;
 public:
 	GLManager();
 	~GLManager();

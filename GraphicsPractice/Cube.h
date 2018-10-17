@@ -95,7 +95,7 @@ private:
 	};
 
 public:
-	Cube(GLuint shader_program) : Drawable()
+	Cube(Shader shader_program) : Drawable()
 	{
 		this->init(shader_program, vertexPositions, num_verts);
 	}
