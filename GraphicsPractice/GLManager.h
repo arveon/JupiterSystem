@@ -38,6 +38,8 @@ private:
 	static float movement_x;
 	static float movement_z;
 	static float rotation_y;
+
+	static GLuint color_mode;
 public:
 	GLManager();
 	~GLManager();

@@ -6,6 +6,8 @@ float GLManager::rotation_y;
 
 GLfloat GLManager::aspect_ratio;
 
+GLuint GLManager::color_mode;
+
 GLManager::GLManager()
 {
 	
@@ -132,8 +134,7 @@ void GLManager::render()
 	x_pos += movement_x;
 	z_pos += movement_z;
 	y_rot += rotation_y;
-
-	std::cerr << x_pos << " " << z_pos << " " << y_rot << std::endl;
+	shader.set_color_mode(color_mode);
 }
 
 void GLManager::terminate()
@@ -156,6 +157,7 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 {
 	if (action == GLFW_PRESS)
 	{
+		//camera position
 		if (key_code == GLFW_KEY_W)
 			movement_z = 0.01f;
 		else if (key_code == GLFW_KEY_S)
@@ -166,11 +168,18 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 		else if (key_code == GLFW_KEY_D)
 			movement_x = -0.01;
 
+		
+		//camera look rotation
 		if (key_code == GLFW_KEY_RIGHT)
 			rotation_y = 0.5;
 		else if (key_code == GLFW_KEY_LEFT)
 			rotation_y = -0.5;
 
+		//color mode
+		if (key_code == GLFW_KEY_0)
+			color_mode = 0;
+		else if (key_code == GLFW_KEY_1)
+			color_mode = 1;
 	}
 	else if(action == GLFW_RELEASE)
 	{

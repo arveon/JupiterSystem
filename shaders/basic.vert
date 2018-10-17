@@ -10,9 +10,19 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform uint color_mode;
+
 void main()
 {
 	//gl_Position = position;
 	gl_Position = projection * view * model * position;
-	fcolour = colour;
+	
+	if(color_mode == 0)
+	{
+		fcolour = colour;
+	}
+	else
+	{
+		fcolour = position * 2.0 + vec4(0.5, 0.5, 0.5, 1.0);
+	}
 }
