@@ -7,7 +7,7 @@ class Cube : public Drawable
 private:
 	const int num_verts = NUM_CUBE_VERTS;
 	/* Define vertices for a cube in 12 triangles */
-	GLfloat vertexPositions[NUM_CUBE_VERTS*VALUES_PER_VERT] =
+	GLfloat verts[NUM_CUBE_VERTS*VALUES_PER_VERT] =
 	{
 		-0.25f, 0.25f, -0.25f,1.0f,
 		0.0f, 0.0f, 1.0f, 1.0f,
@@ -94,10 +94,27 @@ private:
 		0.0f, 1.0f, 1.0f, 1.0f
 	};
 
+	/* Manually specified normals for our cube (3 values per coordinate) */
+	GLfloat normals[NUM_CUBE_VERTS*3] =
+	{
+		0, 0, -1.f, 0, 0, -1.f, 0, 0, -1.f,
+		0, 0, -1.f, 0, 0, -1.f, 0, 0, -1.f,
+		1.f, 0, 0, 1.f, 0, 0, 1.f, 0, 0,
+		1.f, 0, 0, 1.f, 0, 0, 1.f, 0, 0,
+		0, 0, 1.f, 0, 0, 1.f, 0, 0, 1.f,
+		0, 0, 1.f, 0, 0, 1.f, 0, 0, 1.f,
+		-1.f, 0, 0, -1.f, 0, 0, -1.f, 0, 0,
+		-1.f, 0, 0, -1.f, 0, 0, -1.f, 0, 0,
+		0, -1.f, 0, 0, -1.f, 0, 0, -1.f, 0,
+		0, -1.f, 0, 0, -1.f, 0, 0, -1.f, 0,
+		0, 1.f, 0, 0, 1.f, 0, 0, 1.f, 0,
+		0, 1.f, 0, 0, 1.f, 0, 0, 1.f, 0
+	};
+
 public:
 	Cube(Shader shader_program) : Drawable()
 	{
-		this->init(shader_program, vertexPositions, num_verts);
+		this->init(shader_program, verts, num_verts);
 	}
 	~Cube() {}
 };

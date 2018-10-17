@@ -20,6 +20,7 @@
 #include "Triangle.h"
 #include "Square.h"
 #include "Cube.h"
+#include "Sphere.h"
 
 class GLManager
 {
@@ -32,6 +33,7 @@ private:
 	Drawable triangle;
 	Drawable square;
 	Drawable cube;
+	Sphere sphere = NULL;
 
 	static GLfloat aspect_ratio;
 
@@ -40,6 +42,7 @@ private:
 	static float rotation_y;
 
 	static GLuint color_mode;
+	static GLuint sphere_drawmode;
 public:
 	GLManager();
 	~GLManager();

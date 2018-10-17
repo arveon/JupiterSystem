@@ -7,6 +7,7 @@ float GLManager::rotation_y;
 GLfloat GLManager::aspect_ratio;
 
 GLuint GLManager::color_mode;
+GLuint GLManager::sphere_drawmode;
 
 GLManager::GLManager()
 {
@@ -61,9 +62,9 @@ void GLManager::init()
 
 void GLManager::init_objects()
 {
-	triangle = Triangle(shader);
-	square = Square(shader);
 	cube = Cube(shader);
+	sphere = Sphere(shader);
+	sphere.makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 }
 
 void GLManager::loop()
@@ -93,7 +94,7 @@ void GLManager::render()
 	
 	//move camera
 	glm::mat4 view_matrix = glm::lookAt(
-		glm::vec3(0,0,1),
+		glm::vec3(0,0,4),
 		glm::vec3(0,0,0),
 		glm::vec3(0,1,0)
 	);
@@ -104,32 +105,21 @@ void GLManager::render()
 
 	std::stack<glm::mat4> transf;
 	transf.push(glm::mat4(1.0f));
-	transf.top() = glm::translate(transf.top(), glm::vec3(0, 0, -0.25f));
-	transf.top() = glm::scale(transf.top(),glm::vec3(.5f, .5f, 1.f));
-	transf.top() = glm::rotate(transf.top(), glm::radians(30.f), glm::vec3(0, 0, 1));
-
-	//move square to the left
-	transf.push(transf.top());
-	{
-		transf.top() = glm::translate(transf.top(), glm::vec3(-1.f, 0.f, 0.f));
-		square.set_model_matrix(transf.top());
-	}
-	transf.pop();
-	square.draw();
-	
-	//move triangle to left
-	transf.push(transf.top());
-	{
-		transf.top() = glm::translate(transf.top(), glm::vec3(1.f, 0.f, 0.f));
-		triangle.set_model_matrix(transf.top());
-	}
-	transf.pop();
-	triangle.draw();
 
 	//rotate cube
-	transf.top() = glm::rotate(transf.top(), glm::radians(angle), glm::vec3(1, 1, 0));
-	cube.set_model_matrix(transf.top());
+	transf.push(transf.top());
+	{
+		transf.top() = glm::translate(transf.top(), glm::vec3(-.75f, 0.f, 0.f));
+		transf.top() = glm::rotate(transf.top(), glm::radians(angle), glm::vec3(1, 1, 0));
+		cube.set_model_matrix(transf.top());
+	}
+	transf.pop();
 	cube.draw();
+
+	transf.top() = glm::translate(transf.top(), glm::vec3(.75f, 0, 0));
+	transf.top() = glm::scale(transf.top(), glm::vec3(.5f, .5f, .5f));
+	shader.set_model_matrix(transf.top());
+	sphere.drawSphere(sphere_drawmode);
 
 	x_pos += movement_x;
 	z_pos += movement_z;
@@ -180,6 +170,10 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 			color_mode = 0;
 		else if (key_code == GLFW_KEY_1)
 			color_mode = 1;
+
+		if (key_code == GLFW_KEY_M)
+			sphere_drawmode = (sphere_drawmode > NUM_DRAWMODES) ? 1 : sphere_drawmode+1;
+		
 	}
 	else if(action == GLFW_RELEASE)
 	{
