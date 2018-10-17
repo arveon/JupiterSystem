@@ -7,15 +7,27 @@ layout(location = 1) in vec4 colour;
 layout(location = 2) in vec4 normal;
 out vec4 fcolour;
 
+vec4 ambient = vec4(0.2,0.2,0.2,1.0);
+
 uniform mat4 model, view, projection;
-uniform uint color_mode;
+uniform uint colour_mode;
 
 void main()
 {	
-	if(color_mode == 0)
-		fcolour = colour;
+	vec4 diffuse_colour;
+
+	
+	if(colour_mode == 0)
+	{
+		diffuse_colour = colour;
+	}
 	else
-		fcolour = position * 2.0 + vec4(0.5, 0.5, 0.5, 1.0);
+	{
+		diffuse_colour = vec4(0.0, 1.0, 0, 1.0);
+	}
+
+	ambient = diffuse_colour * 0.2;
+	fcolour = ambient;
 
 	gl_Position = projection * view * model * position;
 }

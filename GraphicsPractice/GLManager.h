@@ -41,7 +41,7 @@ private:
 	static float movement_z;
 	static float rotation_y;
 
-	static GLuint color_mode;
+	static GLuint colour_mode;
 	static GLuint sphere_drawmode;
 public:
 	GLManager();

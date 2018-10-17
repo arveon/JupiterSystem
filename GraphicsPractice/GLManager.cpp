@@ -6,7 +6,7 @@ float GLManager::rotation_y;
 
 GLfloat GLManager::aspect_ratio;
 
-GLuint GLManager::color_mode;
+GLuint GLManager::colour_mode;
 GLuint GLManager::sphere_drawmode;
 
 GLManager::GLManager()
@@ -124,7 +124,7 @@ void GLManager::render()
 	x_pos += movement_x;
 	z_pos += movement_z;
 	y_rot += rotation_y;
-	shader.set_color_mode(color_mode);
+	shader.set_color_mode(colour_mode);
 }
 
 void GLManager::terminate()
@@ -167,9 +167,9 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 
 		//color mode
 		if (key_code == GLFW_KEY_0)
-			color_mode = 0;
+			colour_mode = 0;
 		else if (key_code == GLFW_KEY_1)
-			color_mode = 1;
+			colour_mode = 1;
 
 		if (key_code == GLFW_KEY_M)
 			sphere_drawmode = (sphere_drawmode > NUM_DRAWMODES) ? 1 : sphere_drawmode+1;

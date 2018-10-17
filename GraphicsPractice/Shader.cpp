@@ -26,7 +26,7 @@ void Shader::init_shader(GLfloat aspect_ratio)
 	glUniformMatrix4fv(projection_uniform_id, 1, GL_FALSE, &projection[0][0]);
 
 	//allocate color_mode int and set it to 0
-	color_mode_id = glGetUniformLocation(program, "color_mode");
+	color_mode_id = glGetUniformLocation(program, "colour_mode");
 	GLuint mode = 1;
 	glUniform1ui(color_mode_id, mode);
 
