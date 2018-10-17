@@ -95,7 +95,7 @@ private:
 	};
 
 	/* Manually specified normals for our cube (3 values per coordinate) */
-	GLfloat normals[NUM_CUBE_VERTS*3] =
+	GLfloat normals[NUM_CUBE_VERTS*VALUES_PER_NORMAL] =
 	{
 		0, 0, -1.f, 0, 0, -1.f, 0, 0, -1.f,
 		0, 0, -1.f, 0, 0, -1.f, 0, 0, -1.f,
@@ -114,7 +114,7 @@ private:
 public:
 	Cube(Shader shader_program) : Drawable()
 	{
-		this->init(shader_program, verts, num_verts);
+		this->init(shader_program, verts, num_verts, normals);
 	}
 	~Cube() {}
 };

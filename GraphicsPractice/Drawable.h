@@ -10,11 +10,13 @@ class Drawable
 {
 protected:
 	GLuint buffer_id;
+	GLuint normal_buffer;
 	GLuint model_uniform_id;
 
 	Shader shader_program = NULL;
 
-	float *verts = NULL;
+	float *verts = nullptr;
+	float *normals= nullptr;
 	int num_verts;
 
 	void load_into_memory();
@@ -22,7 +24,7 @@ public:
 	Drawable() {};
 	~Drawable();
 	
-	void init(Shader shader_program, float* vertices, int num_verts);
+	void init(Shader shader_program, float* vertices, int num_verts, float* normals = nullptr);
 
 	
 	void draw();

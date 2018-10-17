@@ -1,5 +1,6 @@
 #pragma once
 #define VALUES_PER_VERT 8
+#define VALUES_PER_NORMAL 3
 #define NUM_TRIANGLE_VERTS 3
 #define NUM_SQR_VERTS 6
 #define NUM_CUBE_VERTS 36
