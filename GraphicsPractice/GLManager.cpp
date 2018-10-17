@@ -34,6 +34,17 @@ void GLManager::init()
 	events.set_reshape_callback(win, resize_callback);
 	events.set_key_callback(win, key_callback);
 
+	try
+	{
+		shader.load_shader("../shaders/basic.vert", "../shaders/basic.frag");
+	}
+	catch (std::exception e)
+	{
+		std::cout << "Couldn't load shader: " << e.what() << std::endl;
+		std::cin.ignore();
+		exit(EXIT_FAILURE);
+	}
+
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0, 0, 0, 1);
 
@@ -42,9 +53,9 @@ void GLManager::init()
 
 void GLManager::init_objects()
 {
-	triangle = Triangle("../shaders/basic.vert", "../shaders/basic.frag");
-	square = Square("../shaders/basic.vert", "../shaders/basic.frag");
-	cube = Cube("../shaders/basic.vert", "../shaders/basic.frag");
+	triangle = Triangle(shader.get_program_id());
+	square = Square(shader.get_program_id());
+	cube = Cube(shader.get_program_id());
 }
 
 void GLManager::loop()
@@ -60,7 +71,7 @@ void GLManager::loop()
 void GLManager::render()
 {
 	static float angle = .0f;
-	static float rate = .01f;
+	static float rate = 1.f;
 	angle += rate;
 	if (angle >= 360)
 		angle = 0;
@@ -69,9 +80,9 @@ void GLManager::render()
 	
 	std::stack<glm::mat4> transf;
 	transf.push(glm::mat4(1.0f));
-	transf.top() = glm::translate(transf.top(), glm::vec3(0, 0, -1.f));
+	transf.top() = glm::translate(transf.top(), glm::vec3(0, 0, -0.25f));
 	transf.top() = glm::scale(transf.top(),glm::vec3(.5f, .5f, 1.f));
-	//transf.top() = glm::rotate(transf.top(), glm::radians(30.f), glm::vec3(0, 0, 1));
+	transf.top() = glm::rotate(transf.top(), glm::radians(30.f), glm::vec3(0, 0, 1));
 
 	//move square to the left
 	transf.push(transf.top());

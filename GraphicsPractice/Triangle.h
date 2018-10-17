@@ -22,9 +22,9 @@ private:
 
 	
 public:
-	Triangle(const char* shader_path, const char* fragment_shader_path) : Drawable()
+	Triangle(GLuint shader_program) : Drawable()
 	{
-		this->init(shader_path, fragment_shader_path, triangle, num_verts);
+		this->init(shader_program, triangle, num_verts);
 	}
 	~Triangle() {}
 };

@@ -28,9 +28,9 @@ private:
 	};
 
 public:
-	Square(const char* shader_path, const char* fragment_shader_path) : Drawable()
+	Square(GLuint shader_program) : Drawable()
 	{
-		this->init(shader_path, fragment_shader_path, square, num_verts);
+		this->init(shader_program, square, num_verts);
 	}
 	~Square() {}
 };

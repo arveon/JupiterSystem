@@ -95,9 +95,9 @@ private:
 	};
 
 public:
-	Cube(const char* shader_path, const char* fragment_shader_path) : Drawable()
+	Cube(GLuint shader_program) : Drawable()
 	{
-		this->init(shader_path, fragment_shader_path, vertexPositions, num_verts);
+		this->init(shader_program, vertexPositions, num_verts);
 	}
 	~Cube() {}
 };

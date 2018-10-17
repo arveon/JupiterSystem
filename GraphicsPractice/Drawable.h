@@ -12,7 +12,7 @@ protected:
 	GLuint buffer_id;
 	GLuint model_uniform_id;
 
-	ShaderManager shader;
+	GLuint shader_program;
 
 	float *verts = NULL;
 	int num_verts;
@@ -22,7 +22,7 @@ public:
 	Drawable() {};
 	~Drawable();
 	
-	void init(const char* shader_path, const char* fragment_shader_path, float* vertices, int num_verts);
+	void init(GLuint shader_program, float* vertices, int num_verts);
 
 	
 	void draw();
