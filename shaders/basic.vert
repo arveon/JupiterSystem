@@ -13,8 +13,7 @@ uniform uint colour_mode;
 
 vec3 light_direction = vec3(1,0,0);
 
-vec3 specular_source = vec3(1,1,0);
-float shininess = 0.8;
+float shininess = 10.0;
 
 
 void main()
@@ -23,21 +22,21 @@ void main()
 	//transform normals so they aren't affected by scaling anymore?
 	mat4 model_view = view*model;
 	mat3 n_matrix = transpose(inverse(mat3(model_view)));
-	vec3 transf_normals = n_matrix * normal;
+	vec3 transf_normal = n_matrix * normal;
 
 	//make sure both are normalised
-	transf_normals = normalize(transf_normals);
+	transf_normal = normalize(transf_normal);
 	light_direction = normalize(light_direction);
 
 	//get the cos of angle between them
-	float dif_str = dot(transf_normals, light_direction);
+	float dif_str = dot(transf_normal, light_direction);
 	dif_str = max(dif_str, 0);//clip result at 0-1
 
 	//CALCULATING SPECULAR
-	vec4 source =  model_view * vec4(specular_source, 1.0);
-	vec3 V = normalize(-source.xyz);
-	vec3 reflection = reflect(-specular_source, transf_normals);
-	vec4 specular = pow(max(dot(reflection, V),0.0),shininess) * vec4(0.8,.8,.8, 1.0);
+	vec4 vert_pos =  model_view * position;
+	vec3 vert_pos_normalized = normalize(-vert_pos.xyz);
+	vec3 reflection = reflect(-light_direction, transf_normal);
+	vec4 specular = pow(max(dot(reflection, vert_pos_normalized),0.0),shininess) * vec4(0.8,.8,.8, 1.0);
 
 	if(colour_mode == 0)
 	{

@@ -110,7 +110,7 @@ void GLManager::render()
 	transf.push(transf.top());
 	{
 		transf.top() = glm::translate(transf.top(), glm::vec3(-.75f, 0.f, 0.f));
-		//transf.top() = glm::rotate(transf.top(), glm::radians(angle), glm::vec3(1, 1, 0));
+		transf.top() = glm::rotate(transf.top(), glm::radians(angle), glm::vec3(1, 1, 0));
 		cube.set_model_matrix(transf.top());
 	}
 	transf.pop();
