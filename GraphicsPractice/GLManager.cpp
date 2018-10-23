@@ -64,6 +64,7 @@ void GLManager::init_objects()
 {
 	cube = Cube(shader);
 	sphere = Sphere(shader);
+	light = Sphere(shader);
 	sphere.makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 }
 
@@ -83,7 +84,7 @@ void GLManager::render()
 	static float z_pos = 1;
 	static float y_rot = 0;
 	static float angle = .0f;
-	static float rate = 1.f;
+	static float rate = .01f;
 	angle += rate;
 	if (angle > 360)
 		angle = 0;
@@ -149,21 +150,21 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 	{
 		//camera position
 		if (key_code == GLFW_KEY_W)
-			movement_z = 0.01f;
+			movement_z = 0.001f;
 		else if (key_code == GLFW_KEY_S)
-			movement_z = -0.01;
+			movement_z = -0.001;
 
 		if (key_code == GLFW_KEY_A)
-			movement_x = 0.01;
+			movement_x = 0.001;
 		else if (key_code == GLFW_KEY_D)
-			movement_x = -0.01;
+			movement_x = -0.001;
 
 		
 		//camera look rotation
 		if (key_code == GLFW_KEY_RIGHT)
-			rotation_y = 0.5;
+			rotation_y = 0.05;
 		else if (key_code == GLFW_KEY_LEFT)
-			rotation_y = -0.5;
+			rotation_y = -0.05;
 
 		//color mode
 		if (key_code == GLFW_KEY_0)

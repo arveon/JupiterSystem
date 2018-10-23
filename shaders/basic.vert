@@ -10,10 +10,11 @@ vec4 diffuse_colour;
 
 uniform mat4 model, view, projection;
 uniform uint colour_mode;
+uniform float shininess = 10.0;
+uniform vec4 light_position;
+uniform vec4 emissive_light;
 
 vec3 light_direction = vec3(1,0,0);
-
-float shininess = 10.0;
 
 
 void main()

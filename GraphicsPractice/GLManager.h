@@ -34,6 +34,8 @@ private:
 	Drawable square;
 	Drawable cube;
 	Sphere sphere = NULL;
+	Sphere light = NULL;
+
 
 	static GLfloat aspect_ratio;
 
