@@ -34,6 +34,11 @@ void Shader::init_shader(GLfloat aspect_ratio)
 	GLuint mode = 1;
 	glUniform1ui(color_mode_id, mode);
 
+	//allocate shininess uniform and set to 10
+	shininess_uniform_id = glGetUniformLocation(program, "shininess");
+	GLuint shininess = 10;
+	glUniform1ui(shininess_uniform_id, mode);
+
 	glUseProgram(0);
 }
 
@@ -62,6 +67,20 @@ void Shader::set_color_mode(GLuint mode)
 {
 	glUseProgram(program);
 	glUniform1ui(color_mode_id, mode);
+	glUseProgram(0);
+}
+
+void Shader::set_light_position(glm::vec4 light_pos)
+{
+	glUseProgram(program);
+	glUniform4fv(light_position_uniform_id, 1, &light_pos[0]);
+	glUseProgram(0);
+}
+
+void Shader::set_shininess(GLuint)
+{
+	glUseProgram(program);
+	glUniform1ui(shininess_uniform_id, shininess);
 	glUseProgram(0);
 }
 
