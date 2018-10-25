@@ -94,12 +94,12 @@ void GLManager::render()
 	
 	//move camera
 	glm::mat4 view_matrix = glm::lookAt(
-		glm::vec3(0,0,4),
 		glm::vec3(0,0,0),
+		glm::vec3(0,0,-4),
 		glm::vec3(0,1,0)
 	);
-	view_matrix = glm::translate(view_matrix, glm::vec3(x_pos, 0, z_pos));
 	view_matrix = glm::rotate(view_matrix, glm::radians(y_rot), glm::vec3(0, 1, 0));
+	view_matrix = glm::translate(view_matrix, glm::vec3(x_pos, 0, z_pos-3));
 	shader.set_view_matrix(view_matrix);
 
 
