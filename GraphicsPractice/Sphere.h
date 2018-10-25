@@ -19,6 +19,7 @@ private:
 	Shader shader = NULL;
 public:
 	Sphere(Shader shader);
+	Sphere() {}
 	~Sphere();
 
 	void makeSphere(GLuint numlats, GLuint numlongs);

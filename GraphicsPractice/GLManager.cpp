@@ -4,10 +4,27 @@ float GLManager::movement_x;
 float GLManager::movement_z;
 float GLManager::rotation_y;
 
+float GLManager::x_pos = 0;
+float GLManager::y_rot = 1;
+float GLManager::z_pos = 0;
+
+glm::vec3 GLManager::light_movement;
+
 GLfloat GLManager::aspect_ratio;
 
 GLuint GLManager::colour_mode;
 GLuint GLManager::sphere_drawmode;
+
+bool GLManager::reset = false;
+
+void GLManager::reset_scene()
+{
+	x_pos = 0;
+	z_pos = -1;
+	y_rot = 0;
+	light.move_to(glm::vec4(0, 0, 0, 1));
+	reset = false;
+}
 
 GLManager::GLManager()
 {
@@ -44,8 +61,11 @@ void GLManager::init()
 
 	try
 	{
-		shader = ShaderManager::load_shader("../shaders/basic.vert", "../shaders/basic.frag");
-		shader.init_shader(aspect_ratio);
+		basic_shader = ShaderManager::load_shader("../shaders/basic.vert", "../shaders/basic.frag");
+		basic_shader.init_shader(aspect_ratio, BASIC_SHADER);
+
+		lightsource_shader = ShaderManager::load_shader( "../shaders/lightsource.vert","../shaders/basic.frag");
+		lightsource_shader.init_shader(aspect_ratio, LIGHTSOURCE_SHADER);
 	}
 	catch (std::exception e)
 	{
@@ -62,9 +82,11 @@ void GLManager::init()
 
 void GLManager::init_objects()
 {
-	cube = Cube(shader);
-	sphere = Sphere(shader);
-	light = Sphere(shader);
+	cube = Cube(basic_shader);
+	sphere = Sphere(basic_shader);
+	/*Sphere sphere2 = Sphere(lightsource_shader);
+	sphere2.makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);*/
+	light = Lightsource(lightsource_shader);
 	sphere.makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 }
 
@@ -80,11 +102,9 @@ void GLManager::loop()
 
 void GLManager::render()
 {
-	static float x_pos = 0;
-	static float z_pos = 1;
-	static float y_rot = 0;
+	
 	static float angle = .0f;
-	static float rate = .01f;
+	static float rate = 1.f;
 	angle += rate;
 	if (angle > 360)
 		angle = 0;
@@ -103,32 +123,32 @@ void GLManager::render()
 	view_matrix = glm::translate(view_matrix, glm::vec3(x_pos, 0, z_pos-3));
 	cube.set_view_matrix(view_matrix);
 	sphere.set_view_matrix(view_matrix);
+	light.set_view_matrix(view_matrix);
 
-	std::stack<glm::mat4> transf;
-	transf.push(glm::mat4(1.0f));
+	cube.translate(glm::vec3(-.75f, 0, 0));
+	cube.rotate(glm::radians(angle), glm::vec3(1, 1, 0));
 
-	//rotate cube
-	transf.push(transf.top());
-	{
-		transf.top() = glm::translate(transf.top(), glm::vec3(-.75f, 0.f, 0.f));
-		transf.top() = glm::rotate(transf.top(), glm::radians(angle), glm::vec3(1, 1, 0));
-		cube.set_model_matrix(transf.top());
-	}
-	transf.pop();
-
-	transf.top() = glm::translate(transf.top(), glm::vec3(.75f, 0, 0));
-	transf.top() = glm::scale(transf.top(), glm::vec3(.5f, .5f, .5f));
-	sphere.set_model_matrix(transf.top());
+	sphere.translate(glm::vec3(.75f, 0, 0));
+	sphere.scale(glm::vec3(.5, .5, .5));
 
 
 	//call draw on all objects
 	cube.draw();
 	sphere.drawSphere(sphere_drawmode);
+	light.draw();
+	//light.get_sphere()->drawSphere(sphere_drawmode);
+	
+
+	light.shift(light_movement);
 
 	x_pos += movement_x;
 	z_pos += movement_z;
 	y_rot += rotation_y;
-	shader.set_color_mode(colour_mode);
+	basic_shader.set_color_mode(colour_mode);
+	basic_shader.set_light_position(light.get_position());
+
+	if (reset)
+		reset_scene();
 }
 
 void GLManager::terminate()
@@ -153,27 +173,44 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 	{
 		//camera position
 		if (key_code == GLFW_KEY_W)
-			movement_z = 0.001f;
+			movement_z = .01f;
 		else if (key_code == GLFW_KEY_S)
-			movement_z = -0.001;
+			movement_z = -.01;
 
 		if (key_code == GLFW_KEY_A)
-			movement_x = 0.001;
+			movement_x = .01;
 		else if (key_code == GLFW_KEY_D)
-			movement_x = -0.001;
+			movement_x = -.01;
 
-		
-		//camera look rotation
+		//move light around
+		if (key_code == GLFW_KEY_UP)
+			light_movement.z = -.01;
+		else if (key_code == GLFW_KEY_DOWN)
+			light_movement.z = .01;
 		if (key_code == GLFW_KEY_RIGHT)
-			rotation_y = 0.05;
+			light_movement.x = .01;
 		else if (key_code == GLFW_KEY_LEFT)
-			rotation_y = -0.05;
+			light_movement.x = -.01;
+		if (key_code == GLFW_KEY_KP_ADD)
+			light_movement.y = .01;
+		else if (key_code == GLFW_KEY_KP_SUBTRACT)
+			light_movement.y = -.01;
+
+		//camera look rotation
+		if (key_code == GLFW_KEY_E)
+			rotation_y = .5;
+		else if (key_code == GLFW_KEY_Q)
+			rotation_y = -.5;
 
 		//color mode
 		if (key_code == GLFW_KEY_0)
 			colour_mode = 0;
 		else if (key_code == GLFW_KEY_1)
 			colour_mode = 1;
+
+		//reset
+		if (key_code == GLFW_KEY_R)
+			reset = true;
 
 		if (key_code == GLFW_KEY_M)
 			sphere_drawmode = (sphere_drawmode > NUM_DRAWMODES) ? 1 : sphere_drawmode+1;
@@ -186,8 +223,16 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 		if (key_code == GLFW_KEY_A || key_code == GLFW_KEY_D)
 			movement_x = 0;
 
-		if (key_code == GLFW_KEY_RIGHT || key_code == GLFW_KEY_LEFT)
+		if (key_code == GLFW_KEY_Q || key_code == GLFW_KEY_E)
 			rotation_y = 0;
+
+		if (key_code == GLFW_KEY_RIGHT || key_code == GLFW_KEY_LEFT)
+			light_movement.x = 0;
+		if (key_code == GLFW_KEY_UP || key_code == GLFW_KEY_DOWN)
+			light_movement.z = 0;
+		if (key_code == GLFW_KEY_KP_ADD || key_code == GLFW_KEY_KP_SUBTRACT)
+			light_movement.y = 0;
+
 	}
 }
 

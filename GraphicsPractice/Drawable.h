@@ -33,5 +33,9 @@ public:
 	void draw();
 	void set_model_matrix(glm::mat4 model_matrix);
 	void set_view_matrix(glm::mat4 view_matrix);
+
+	void translate(glm::vec3 direction);
+	void rotate(float radians, glm::vec3 axis);
+	void scale(glm::vec3 direction);
 };
 

@@ -12,3 +12,6 @@
 #define WINDOW_HEIGHT 480
 
 #define NUM_DRAWMODES 2
+
+#define LIGHTSOURCE_SHADER 1
+#define BASIC_SHADER 2

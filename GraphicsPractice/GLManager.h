@@ -21,6 +21,7 @@
 #include "Square.h"
 #include "Cube.h"
 #include "Sphere.h"
+#include "Lightsource.h"
 
 class GLManager
 {
@@ -28,13 +29,16 @@ private:
 	GLFWwindow * win;
 
 	EventManager events;
-	Shader shader = NULL;
+	Shader basic_shader = NULL;
+	Shader lightsource_shader = NULL;
+	
 
 	Drawable triangle;
 	Drawable square;
 	Drawable cube;
-	Sphere sphere = NULL;
-	Sphere light = NULL;
+	Sphere sphere;
+	
+	Lightsource light;
 
 
 	static GLfloat aspect_ratio;
@@ -43,8 +47,18 @@ private:
 	static float movement_z;
 	static float rotation_y;
 
+	static float x_pos;
+	static float z_pos;
+	static float y_rot;
+
+	static glm::vec3 light_movement;
+
 	static GLuint colour_mode;
 	static GLuint sphere_drawmode;
+
+	static bool reset;
+
+	void reset_scene();
 public:
 	GLManager();
 	~GLManager();

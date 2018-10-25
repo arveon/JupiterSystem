@@ -39,6 +39,9 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Lightsource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLManager.h">
@@ -71,12 +74,18 @@
     <ClInclude Include="Sphere.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Lightsource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\basic.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\shaders\basic.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\shaders\lightsource.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

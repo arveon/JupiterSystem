@@ -160,8 +160,6 @@ void Sphere::makeUnitSphere(GLfloat *pVertices)
 /* Draws the sphere form the previously defined vertex and index buffers */
 void Sphere::drawSphere(int drawmode)
 {
-	shader.set_model_matrix(model_matrix);
-	shader.set_view_matrix(view_matrix);
 	shader.set_model_view_matrix(view_matrix*model_matrix);
 
 	GLuint i;
@@ -218,4 +216,6 @@ void Sphere::drawSphere(int drawmode)
 		glDrawElements(GL_TRIANGLE_FAN, numlongs + 2, GL_UNSIGNED_INT, (GLvoid*)(lat_offset_current));
 	}
 	glUseProgram(0);
+
+	this->model_matrix = glm::mat4(1.f);
 }
