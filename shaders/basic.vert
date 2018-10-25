@@ -9,6 +9,7 @@ vec4 ambient = vec4(0.2,0.0,0.0,1.0);
 vec4 diffuse_colour;
 
 uniform mat4 model, view, projection;
+uniform mat4 model_view;
 uniform uint colour_mode;
 
 vec3 light_direction = vec3(1,0,0);
@@ -20,7 +21,6 @@ void main()
 {	
 	//CALCULATING_DIFFUSE
 	//transform normals so they aren't affected by scaling anymore?
-	mat4 model_view = view*model;
 	mat3 n_matrix = transpose(inverse(mat3(model_view)));
 	vec3 transf_normal = n_matrix * normal;
 

@@ -100,8 +100,8 @@ void GLManager::render()
 	);
 	view_matrix = glm::rotate(view_matrix, glm::radians(y_rot), glm::vec3(0, 1, 0));
 	view_matrix = glm::translate(view_matrix, glm::vec3(x_pos, 0, z_pos-3));
-	shader.set_view_matrix(view_matrix);
-
+	cube.set_view_matrix(view_matrix);
+	sphere.set_view_matrix(view_matrix);
 
 	std::stack<glm::mat4> transf;
 	transf.push(glm::mat4(1.0f));
@@ -114,11 +114,14 @@ void GLManager::render()
 		cube.set_model_matrix(transf.top());
 	}
 	transf.pop();
-	cube.draw();
 
 	transf.top() = glm::translate(transf.top(), glm::vec3(.75f, 0, 0));
 	transf.top() = glm::scale(transf.top(), glm::vec3(.5f, .5f, .5f));
-	shader.set_model_matrix(transf.top());
+	sphere.set_model_matrix(transf.top());
+
+
+	//call draw on all objects
+	cube.draw();
 	sphere.drawSphere(sphere_drawmode);
 
 	x_pos += movement_x;

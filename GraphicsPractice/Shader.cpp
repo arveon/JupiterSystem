@@ -19,6 +19,10 @@ void Shader::init_shader(GLfloat aspect_ratio)
 	);
 	glUniformMatrix4fv(view_uniform_id, 1, GL_FALSE, &view[0][0]);
 
+	//allocate modelview matrix
+	model_view_uniform_id = glGetUniformLocation(program, "model_view");
+	glUniformMatrix4fv(model_view_uniform_id, 1, GL_FALSE, &model[0][0]);
+
 	//projection
 	projection_uniform_id = glGetUniformLocation(program, "projection");
 	//set initial matrix value to identity matrix
@@ -44,6 +48,13 @@ void Shader::set_model_matrix(glm::mat4 model)
 {
 	glUseProgram(program);
 	glUniformMatrix4fv(model_uniform_id, 1, GL_FALSE, &model[0][0]);
+	glUseProgram(0);
+}
+
+void Shader::set_model_view_matrix(glm::mat4 model_view)
+{
+	glUseProgram(program);
+	glUniformMatrix4fv(model_view_uniform_id, 1, GL_FALSE, &model_view[0][0]);
 	glUseProgram(0);
 }
 

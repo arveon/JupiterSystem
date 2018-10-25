@@ -10,6 +10,7 @@ class Shader
 private:
 	GLuint program;
 
+	GLuint model_view_uniform_id;
 	GLuint model_uniform_id;
 	GLuint view_uniform_id;
 	GLuint projection_uniform_id;
@@ -22,6 +23,7 @@ public:
 	void init_shader(GLfloat aspect_ratio);
 	void set_view_matrix(glm::mat4);
 	void set_model_matrix(glm::mat4);
+	void set_model_view_matrix(glm::mat4);
 	void set_color_mode(GLuint);
 
 

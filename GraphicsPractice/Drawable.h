@@ -19,6 +19,9 @@ protected:
 	float *normals= nullptr;
 	int num_verts;
 
+	glm::mat4 model_matrix;
+	glm::mat4 view_matrix;
+
 	void load_into_memory();
 public:
 	Drawable() {};

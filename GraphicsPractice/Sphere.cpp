@@ -160,6 +160,10 @@ void Sphere::makeUnitSphere(GLfloat *pVertices)
 /* Draws the sphere form the previously defined vertex and index buffers */
 void Sphere::drawSphere(int drawmode)
 {
+	shader.set_model_matrix(model_matrix);
+	shader.set_view_matrix(view_matrix);
+	shader.set_model_view_matrix(view_matrix*model_matrix);
+
 	GLuint i;
 	glUseProgram(shader.get_program_id());
 	/* Draw the vertices as GL_POINTS */

@@ -34,7 +34,9 @@ void Drawable::load_into_memory()
 
 void Drawable::draw()
 {
-	
+	shader_program.set_model_matrix(model_matrix);
+	shader_program.set_model_view_matrix(view_matrix * model_matrix);
+	shader_program.set_view_matrix(view_matrix);
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
 	glEnableVertexAttribArray(0);
@@ -58,10 +60,10 @@ void Drawable::draw()
 
 void Drawable::set_model_matrix(glm::mat4 model_matrix)
 {
-	shader_program.set_model_matrix(model_matrix);
+	this->model_matrix = model_matrix;
 }
 
 void Drawable::set_view_matrix(glm::mat4 view_matrix)
 {
-	shader_program.set_view_matrix(view_matrix);
+	this->view_matrix = view_matrix;
 }

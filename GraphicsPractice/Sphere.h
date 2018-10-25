@@ -11,8 +11,9 @@ Iain Martin November 2018
 #include <glm/glm.hpp>
 
 #include "Shader.h"
+#include "Drawable.h"
 
-class Sphere
+class Sphere : public Drawable
 {
 private:
 	Shader shader = NULL;
