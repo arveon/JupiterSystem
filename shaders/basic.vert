@@ -11,12 +11,25 @@ vec4 specular_colour = vec4(0.8, 0.8, 0.8, 1);
 
 uniform mat4 model_view, view, projection;
 uniform uint colour_mode;
-uniform float shininess = 10.0;
+
 uniform vec4 light_position;
+
+out vec3 fposition, fnormal, flightpos;
+out vec4 fdiffuse, fspecular, fambient;
+
+uniform float shininess = 10;
 
 
 void main()
 {	
+	fposition = (model_view * position).xyz;
+	fnormal = normalize(transpose(inverse(mat3(model_view)))*normal);
+	flightpos = (view * light_position).xyz;
+	fdiffuse = diffuse_colour;
+	fambient = ambient_colour;
+	fspecular = specular_colour;
+
+
 	//CALCULATING_DIFFUSE
 	//transform normals so they aren't affected by scaling anymore and normalize them
 	mat3 n_matrix = transpose(inverse(mat3(model_view)));
@@ -43,8 +56,7 @@ void main()
 	//attenuation
 	float k1 = 0.5;
 	float attenuation = 1.0 / (k1+k1*distance_to_light + pow(k1*distance_to_light,2));
-
-	fcolour = attenuation*(specular + diffuse) + ambient_colour * 0.5;
+	fcolour = specular + diffuse + ambient_colour * 0.5;
 
 	gl_Position = projection * model_view * position;
 }

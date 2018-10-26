@@ -150,6 +150,7 @@
   <ItemGroup>
     <None Include="..\shaders\basic.frag" />
     <None Include="..\shaders\basic.vert" />
+    <None Include="..\shaders\lightsource.frag" />
     <None Include="..\shaders\lightsource.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

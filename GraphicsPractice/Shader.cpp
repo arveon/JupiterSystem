@@ -35,6 +35,9 @@ void Shader::init_shader(GLfloat aspect_ratio, int type)
 		view_uniform_id = glGetUniformLocation(program, "view");
 		glm::mat4 model = glm::mat4(1.f);
 		glUniformMatrix4fv(view_uniform_id, 1, GL_FALSE, &model[0][0]);
+
+		attenuation_enabled_uniform_id = glGetUniformLocation(program, "attenuation_enabled");
+		glUniform1i(attenuation_enabled_uniform_id, true);
 	}
 
 	glUseProgram(0);
@@ -68,11 +71,17 @@ void Shader::set_light_position(glm::vec4 light_pos)
 	glUseProgram(0);
 }
 
-void Shader::set_shininess(GLuint)
+void Shader::set_shininess(GLfloat shininess)
 {
 	glUseProgram(program);
-	glUniform1ui(shininess_uniform_id, shininess);
+	glUniform1f(shininess_uniform_id, shininess);
 	glUseProgram(0);
+}
+
+void Shader::set_attenuation_enabled(GLboolean enabled)
+{
+	glUseProgram(program);
+	glUniform1i(attenuation_enabled_uniform_id, enabled);
 }
 
 Shader::Shader(GLuint program_id)

@@ -63,8 +63,9 @@ void GLManager::init()
 	{
 		basic_shader = ShaderManager::load_shader("../shaders/basic.vert", "../shaders/basic.frag");
 		basic_shader.init_shader(aspect_ratio, BASIC_SHADER);
+		basic_shader.set_shininess(20);
 
-		lightsource_shader = ShaderManager::load_shader( "../shaders/lightsource.vert","../shaders/basic.frag");
+		lightsource_shader = ShaderManager::load_shader( "../shaders/lightsource.vert","../shaders/lightsource.frag");
 		lightsource_shader.init_shader(aspect_ratio, LIGHTSOURCE_SHADER);
 	}
 	catch (std::exception e)
@@ -126,7 +127,8 @@ void GLManager::render()
 	light.set_view_matrix(view_matrix);
 
 	cube.translate(glm::vec3(-.75f, 0, 0));
-	cube.rotate(glm::radians(angle), glm::vec3(1, 1, 0));
+	cube.scale(glm::vec3(2, 2, 2));
+	//cube.rotate(glm::radians(angle), glm::vec3(1, 1, 0));
 
 	sphere.translate(glm::vec3(.75f, 0, 0));
 	sphere.scale(glm::vec3(.5, .5, .5));

@@ -20,9 +20,7 @@ private:
 	GLuint color_mode_id;
 	GLfloat shininess_uniform_id;
 	GLuint light_position_uniform_id;
-	GLuint is_light_uniform_id;
-
-	GLuint shininess;
+	GLfloat attenuation_enabled_uniform_id;
 public:
 
 	GLuint get_program_id() { return program; };
@@ -33,7 +31,8 @@ public:
 	void set_model_view_matrix(glm::mat4);
 	void set_color_mode(GLuint);
 	void set_light_position(glm::vec4);
-	void set_shininess(GLuint);
+	void set_shininess(GLfloat);
+	void set_attenuation_enabled(GLboolean);
 
 	Shader(GLuint program_id);
 	~Shader();

@@ -88,5 +88,8 @@
     <None Include="..\shaders\lightsource.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\shaders\lightsource.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
