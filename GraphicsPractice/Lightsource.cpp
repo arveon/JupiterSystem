@@ -7,6 +7,7 @@ Lightsource::Lightsource(Shader light_shader)
 	sphere = Sphere(light_shader);
 	sphere.makeSphere(20, 20);
 	light_position = glm::vec4(0, 0, 0, 1);
+	scale = glm::vec3(.1, .1, .1);
 }
 
 
@@ -17,8 +18,7 @@ Lightsource::~Lightsource()
 void Lightsource::draw()
 {
 	sphere.translate(light_position);
-	//sphere.scale(glm::vec3(.5,.5,.5))
-	sphere.scale(glm::vec3(.1, .1, .1));
+	sphere.scale(scale);
 	sphere.drawSphere(0);
 }
 

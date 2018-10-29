@@ -13,6 +13,7 @@ private:
 	Sphere sphere = NULL;
 
 	glm::vec4 light_position;
+	glm::vec3 scale;
 public:
 	void draw();
 
@@ -21,6 +22,8 @@ public:
 
 	void move_to(glm::vec4);
 	void shift(glm::vec3);
+
+	void set_scale(glm::vec3 new_scale) { scale = new_scale; }
 
 	glm::vec4 get_position() { return light_position; }
 

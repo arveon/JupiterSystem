@@ -22,17 +22,21 @@ protected:
 	glm::mat4 model_matrix;
 	glm::mat4 view_matrix;
 
+	glm::vec3 center_position = glm::vec4(0);
+
 	void load_into_memory();
 public:
 	Drawable() {};
 	~Drawable();
 	
 	void init(Shader shader_program, float* vertices, int num_verts, float* normals = nullptr);
-
 	
 	void draw();
 	void set_model_matrix(glm::mat4 model_matrix);
 	void set_view_matrix(glm::mat4 view_matrix);
+
+	glm::mat4 get_model_matrix() { return model_matrix; }
+	glm::vec3 get_center_position() { return center_position; }
 
 	void translate(glm::vec3 direction);
 	void rotate(float radians, glm::vec3 axis);

@@ -22,6 +22,7 @@
 #include "Cube.h"
 #include "Sphere.h"
 #include "Lightsource.h"
+#include "Planet.h"
 
 class GLManager
 {
@@ -33,12 +34,15 @@ private:
 	Shader lightsource_shader = NULL;
 	
 
-	Drawable triangle;
-	Drawable square;
-	Drawable cube;
-	Sphere sphere;
+	Sphere jupiter;
+	Sphere io;
+	Sphere europa;
+	Sphere ganymede;
+	Sphere callisto;
+
+	std::vector<Planet*> bodies;
 	
-	Lightsource light;
+	Lightsource sun;
 
 
 	static GLfloat aspect_ratio;

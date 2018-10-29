@@ -78,6 +78,7 @@ void Drawable::set_view_matrix(glm::mat4 view_matrix)
 void Drawable::translate(glm::vec3 direction)
 {
 	model_matrix = glm::translate(model_matrix, direction);
+	center_position = direction;
 }
 
 void Drawable::rotate(float radians, glm::vec3 axis)

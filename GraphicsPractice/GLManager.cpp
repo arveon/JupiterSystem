@@ -22,7 +22,7 @@ void GLManager::reset_scene()
 	x_pos = 0;
 	z_pos = -1;
 	y_rot = 0;
-	light.move_to(glm::vec4(0, 0, 0, 1));
+	sun.move_to(glm::vec4(0, 0, 0, 1));
 	reset = false;
 }
 
@@ -83,12 +83,23 @@ void GLManager::init()
 
 void GLManager::init_objects()
 {
-	cube = Cube(basic_shader);
-	sphere = Sphere(basic_shader);
-	/*Sphere sphere2 = Sphere(lightsource_shader);
-	sphere2.makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);*/
-	light = Lightsource(lightsource_shader);
-	sphere.makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
+	Sphere* sp = new Sphere(basic_shader);
+	sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
+	bodies.push_back(new Planet(1.f, .2f, 0, sp, nullptr, 3.f));
+
+	//make 4 big normal moons
+	for (int i = 0; i < 4; i++)
+	{
+		float speed = rand()%100 / 99.f + 1.f;
+		std::cerr << speed << std::endl;
+		Sphere* sp = new Sphere(basic_shader);
+		sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
+		bodies.push_back(new Planet(speed, .1f, rand() % 360, sp, bodies.at(0), 4.f+(i*2.5f)));
+	}
+
+	sun = Lightsource(lightsource_shader);
+	sun.set_scale(glm::vec3( .3f, .3f, .3f));
+	
 }
 
 void GLManager::loop()
@@ -103,7 +114,9 @@ void GLManager::loop()
 
 void GLManager::render()
 {
-	
+	static float jp_scale = 0.3;
+	static float mn_scale = 0.1;
+
 	static float angle = .0f;
 	static float rate = 1.f;
 	angle += rate;
@@ -111,6 +124,11 @@ void GLManager::render()
 		angle = 0;
 	if (y_rot > 360)
 		y_rot = 0;
+
+	static float moon_angle = .0f;
+	moon_angle += rate*2;
+	if (moon_angle > 360)
+		moon_angle = 0;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -122,32 +140,17 @@ void GLManager::render()
 	);
 	view_matrix = glm::rotate(view_matrix, glm::radians(y_rot), glm::vec3(0, 1, 0));
 	view_matrix = glm::translate(view_matrix, glm::vec3(x_pos, 0, z_pos-3));
-	cube.set_view_matrix(view_matrix);
-	sphere.set_view_matrix(view_matrix);
-	light.set_view_matrix(view_matrix);
-
-	cube.translate(glm::vec3(-.75f, 0, 0));
-	cube.scale(glm::vec3(2, 2, 2));
-	//cube.rotate(glm::radians(angle), glm::vec3(1, 1, 0));
-
-	sphere.translate(glm::vec3(.75f, 0, 0));
-	sphere.scale(glm::vec3(.5, .5, .5));
-
-
-	//call draw on all objects
-	cube.draw();
-	sphere.drawSphere(sphere_drawmode);
-	light.draw();
-	//light.get_sphere()->drawSphere(sphere_drawmode);
-	
-
-	light.shift(light_movement);
+	sun.set_view_matrix(view_matrix);
+	for (Planet* p : bodies)
+		p->draw(view_matrix, sphere_drawmode);
+	sun.shift(light_movement);
+	sun.draw();
 
 	x_pos += movement_x;
 	z_pos += movement_z;
 	y_rot += rotation_y;
 	basic_shader.set_color_mode(colour_mode);
-	basic_shader.set_light_position(light.get_position());
+	basic_shader.set_light_position(sun.get_position());
 
 	if (reset)
 		reset_scene();
