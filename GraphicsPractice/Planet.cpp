@@ -24,11 +24,12 @@ Planet::~Planet()
 	delete sphere;
 }
 
-void Planet::draw(glm::mat4 view_matrix, int sphere_drawmode)
+void Planet::draw(glm::mat4 view_matrix, float delta_time, int sphere_drawmode)
 {
 	sphere->set_view_matrix(view_matrix);
 
-	cur_angle = (cur_angle >= 360) ? 0 : cur_angle + rotation_speed;
+	float speed = (rotation_speed*delta_time);
+	cur_angle = (cur_angle >= 360) ? 0 : cur_angle + speed;
 
 	float px = glm::cos(glm::radians(cur_angle))*dist_from_parent;
 	float py = glm::sin(glm::radians(cur_angle))*dist_from_parent;

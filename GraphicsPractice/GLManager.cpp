@@ -17,6 +17,8 @@ GLuint GLManager::sphere_drawmode;
 
 bool GLManager::reset = false;
 
+GLshort GLManager::delta_time = 0;
+
 void GLManager::reset_scene()
 {
 	x_pos = 0;
@@ -85,13 +87,13 @@ void GLManager::init_objects()
 {
 	Sphere* sp = new Sphere(basic_shader);
 	sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
-	bodies.push_back(new Planet(1.f, .2f, 0, sp, nullptr, 3.f));
+	bodies.push_back(new Planet(.1f, .2f, 0, sp, nullptr, 20.f));
 
 	//make 4 big normal moons
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 20; i++)
 	{
-		float speed = rand()%100 / 99.f + 1.f;
-		std::cerr << speed << std::endl;
+		float speed = (rand()%20/100.f + 0.01f);
+		std::cout << speed << std::endl;
 		Sphere* sp = new Sphere(basic_shader);
 		sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 		bodies.push_back(new Planet(speed, .1f, rand() % 360, sp, bodies.at(0), 4.f+(i*2.5f)));
@@ -104,31 +106,25 @@ void GLManager::init_objects()
 
 void GLManager::loop()
 {
+	glfwSetTime(0);
 	while (!glfwWindowShouldClose(win))
 	{
-		render();
+		static float prev_time = 0;
+		float delta_time = (glfwGetTime() - prev_time) * 500;
+		prev_time = glfwGetTime();
+
+		render(delta_time);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 	}
 }
 
-void GLManager::render()
+void GLManager::render(float delta_time)
 {
 	static float jp_scale = 0.3;
 	static float mn_scale = 0.1;
-
-	static float angle = .0f;
-	static float rate = 1.f;
-	angle += rate;
-	if (angle > 360)
-		angle = 0;
 	if (y_rot > 360)
 		y_rot = 0;
-
-	static float moon_angle = .0f;
-	moon_angle += rate*2;
-	if (moon_angle > 360)
-		moon_angle = 0;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -142,13 +138,13 @@ void GLManager::render()
 	view_matrix = glm::translate(view_matrix, glm::vec3(x_pos, 0, z_pos-3));
 	sun.set_view_matrix(view_matrix);
 	for (Planet* p : bodies)
-		p->draw(view_matrix, sphere_drawmode);
-	sun.shift(light_movement);
+		p->draw(view_matrix, delta_time, sphere_drawmode);
+	sun.shift(glm::vec3(light_movement.x*delta_time, light_movement.y*delta_time, light_movement.z*delta_time));
 	sun.draw();
 
-	x_pos += movement_x;
-	z_pos += movement_z;
-	y_rot += rotation_y;
+	x_pos += movement_x*delta_time;
+	z_pos += movement_z*delta_time;
+	y_rot += rotation_y*delta_time;
 	basic_shader.set_color_mode(colour_mode);
 	basic_shader.set_light_position(sun.get_position());
 
@@ -178,34 +174,34 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 	{
 		//camera position
 		if (key_code == GLFW_KEY_W)
-			movement_z = .01f;
+			movement_z = CAMERA_MOVEMENT_SPEED;
 		else if (key_code == GLFW_KEY_S)
-			movement_z = -.01;
+			movement_z = -CAMERA_MOVEMENT_SPEED;
 
 		if (key_code == GLFW_KEY_A)
-			movement_x = .01;
+			movement_x = CAMERA_MOVEMENT_SPEED;
 		else if (key_code == GLFW_KEY_D)
-			movement_x = -.01;
+			movement_x = -CAMERA_MOVEMENT_SPEED;
 
 		//move light around
 		if (key_code == GLFW_KEY_UP)
-			light_movement.z = -.01;
+			light_movement.z = -LIGHT_MOVEMENT_SPEED;
 		else if (key_code == GLFW_KEY_DOWN)
-			light_movement.z = .01;
+			light_movement.z = LIGHT_MOVEMENT_SPEED;
 		if (key_code == GLFW_KEY_RIGHT)
-			light_movement.x = .01;
+			light_movement.x = LIGHT_MOVEMENT_SPEED;
 		else if (key_code == GLFW_KEY_LEFT)
-			light_movement.x = -.01;
+			light_movement.x = -LIGHT_MOVEMENT_SPEED;
 		if (key_code == GLFW_KEY_KP_ADD)
-			light_movement.y = .01;
+			light_movement.y = LIGHT_MOVEMENT_SPEED;
 		else if (key_code == GLFW_KEY_KP_SUBTRACT)
-			light_movement.y = -.01;
+			light_movement.y = -LIGHT_MOVEMENT_SPEED;
 
 		//camera look rotation
 		if (key_code == GLFW_KEY_E)
-			rotation_y = .5;
+			rotation_y = CAMERA_ROTATION_SPEED;
 		else if (key_code == GLFW_KEY_Q)
-			rotation_y = -.5;
+			rotation_y = -CAMERA_ROTATION_SPEED;
 
 		//color mode
 		if (key_code == GLFW_KEY_0)

@@ -44,7 +44,6 @@ private:
 	
 	Lightsource sun;
 
-
 	static GLfloat aspect_ratio;
 
 	static float movement_x;
@@ -62,6 +61,8 @@ private:
 
 	static bool reset;
 
+	static GLshort delta_time;
+
 	void reset_scene();
 public:
 	GLManager();
@@ -69,7 +70,7 @@ public:
 
 	void init();
 	void loop();
-	void render();
+	void render(float delta_time);
 	void terminate();
 
 	static void resize_callback(GLFWwindow* window, int width, int height);
