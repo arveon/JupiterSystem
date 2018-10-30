@@ -35,6 +35,6 @@ void main()
 		attenuation = 1.0 / (k1 + k1*distance_to_light + k1*pow(distance_to_light, 2));
 	}
 
-	outputColor = attenuation * (diffuse + specular) + fambient;
+	outputColor = (diffuse + specular) + fambient;
 	//outputColor = fcolour;
 }

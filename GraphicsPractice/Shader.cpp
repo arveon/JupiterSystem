@@ -50,6 +50,13 @@ void Shader::set_view_matrix(glm::mat4 view)
 	glUseProgram(0);
 }
 
+void Shader::set_projection_matrix(glm::mat4 proj)
+{
+	glUseProgram(program);
+	glUniformMatrix4fv(projection_uniform_id, 1, GL_FALSE, &proj[0][0]);
+	glUseProgram(0);
+}
+
 void Shader::set_model_view_matrix(glm::mat4 model_view)
 {
 	glUseProgram(program);

@@ -134,6 +134,12 @@ void GLManager::render(float delta_time)
 		glm::vec3(0,0,-4),
 		glm::vec3(0,1,0)
 	);
+
+	//set projection and view matrix inside the shader
+	glm::mat4 projection = glm::perspective(glm::radians(60.f), aspect_ratio, 0.1f, 100.f);
+	basic_shader.set_projection_matrix(projection);
+	lightsource_shader.set_projection_matrix(projection);
+
 	view_matrix = glm::rotate(view_matrix, glm::radians(y_rot), glm::vec3(0, 1, 0));
 	view_matrix = glm::translate(view_matrix, glm::vec3(x_pos, 0, z_pos-3));
 	sun.set_view_matrix(view_matrix);
@@ -160,7 +166,8 @@ void GLManager::terminate()
 void GLManager::resize_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
-	aspect_ratio = float(width) / float(height);
+	//aspect_ratio = float(width) / float(height);
+	aspect_ratio = ((float)width / 640.f*4.f) / ((float)height / 480.f*3.f);
 }
 
 void GLManager::error_callback(int error, const char* desc)

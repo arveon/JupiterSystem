@@ -22,11 +22,11 @@ private:
 	GLuint light_position_uniform_id;
 	GLfloat attenuation_enabled_uniform_id;
 public:
-
 	GLuint get_program_id() { return program; };
 
 	void init_shader(GLfloat aspect_ratio, int type);
 	void set_view_matrix(glm::mat4);
+	void set_projection_matrix(glm::mat4);
 	/*void set_model_matrix(glm::mat4);*/
 	void set_model_view_matrix(glm::mat4);
 	void set_color_mode(GLuint);
