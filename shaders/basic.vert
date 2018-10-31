@@ -23,7 +23,7 @@ uniform float shininess = 10;
 void main()
 {	
 	fposition = (model_view * position).xyz;
-	fnormal = normalize(transpose(inverse(mat3(model_view)))*normal);
+	fnormal = transpose(inverse(mat3(model_view)))*normal;
 	flightpos = (view * light_position).xyz;
 	fdiffuse = diffuse_colour;
 	fambient = ambient_colour;

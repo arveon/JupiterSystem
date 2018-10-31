@@ -19,13 +19,14 @@ void main()
 	vec3 to_light = flightpos - fposition;
 	float distance_to_light = length(to_light);
 	to_light = normalize(to_light);
+	vec3 fnormal_n = normalize(fnormal);
 
 	//diffuse
-	vec4 diffuse = max(dot(fnormal, to_light), 0) * fdiffuse;
+	vec4 diffuse = max(dot(fnormal_n, to_light), 0) * fdiffuse;
 	
 	//specular
 	vec3 normalised_vert = normalize(-fposition.xyz);
-	vec3 reflection = reflect(-to_light, normalised_vert);
+	vec3 reflection = reflect(-to_light, fnormal_n);
 	vec4 specular = pow(max(dot(reflection, normalised_vert), 0), shininess) * fspecular;
 
 	float attenuation = 1;
@@ -36,5 +37,4 @@ void main()
 	}
 
 	outputColor = (diffuse + specular) + fambient;
-	//outputColor = fcolour;
 }

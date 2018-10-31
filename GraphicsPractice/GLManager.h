@@ -24,6 +24,8 @@
 #include "Lightsource.h"
 #include "Planet.h"
 
+#include "Camera.h"
+
 class GLManager
 {
 private:
@@ -33,35 +35,19 @@ private:
 	Shader basic_shader = NULL;
 	Shader lightsource_shader = NULL;
 	
-
-	Sphere jupiter;
-	Sphere io;
-	Sphere europa;
-	Sphere ganymede;
-	Sphere callisto;
-
 	std::vector<Planet*> bodies;
 	
 	Lightsource sun;
 
+	static glm::vec2 cursor_movement;
+	static Camera camera;
 	static GLfloat aspect_ratio;
-
-	static float movement_x;
-	static float movement_z;
-	static float rotation_y;
-
-	static float x_pos;
-	static float z_pos;
-	static float y_rot;
-
 	static glm::vec3 light_movement;
-
 	static GLuint colour_mode;
 	static GLuint sphere_drawmode;
-
 	static bool reset;
-
 	static GLshort delta_time;
+	static bool close;
 
 	void reset_scene();
 public:
@@ -76,6 +62,7 @@ public:
 	static void resize_callback(GLFWwindow* window, int width, int height);
 	static void error_callback(int error, const char* desc);
 	static void key_callback(GLFWwindow* window, int key_code, int scancode, int action, int mods);
+	static void cursor_moved_callback(GLFWwindow* window, double xpos, double ypos);
 
 	void init_objects();
 };
