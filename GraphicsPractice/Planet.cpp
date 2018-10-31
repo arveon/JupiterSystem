@@ -16,7 +16,6 @@ Planet::Planet(float rotation_speed, float scale, float starting_angle, Sphere* 
 	this->sphere = sphere;
 	this->parent = parent;
 	this->dist_from_parent = dist_from_parent;
-	//sphere.makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 }
 
 Planet::~Planet()
@@ -32,7 +31,7 @@ void Planet::draw(glm::mat4 view_matrix, float delta_time, int sphere_drawmode)
 	cur_angle = (cur_angle >= 360) ? 0 : cur_angle + speed;
 
 	float px = glm::cos(glm::radians(cur_angle))*dist_from_parent;
-	float py = glm::sin(glm::radians(cur_angle))*dist_from_parent;
+	float pz = glm::sin(glm::radians(cur_angle))*dist_from_parent;
 
 	if (parent != nullptr)
 	{
@@ -40,11 +39,11 @@ void Planet::draw(glm::mat4 view_matrix, float delta_time, int sphere_drawmode)
 		float parent_scale = parent->get_scale();
 
 		px += origin.x * parent_scale / scale;
-		py += origin.y * parent_scale / scale;
+		pz += origin.z * parent_scale / scale;
 	}
 
 	sphere->scale(glm::vec3(scale, scale, scale));
-	sphere->translate(glm::vec3(px, py, 0));
+	sphere->translate(glm::vec3(px, 0, pz));
 
 	sphere->drawSphere(sphere_drawmode);
 }

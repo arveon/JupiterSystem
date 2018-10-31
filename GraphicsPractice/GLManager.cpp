@@ -160,7 +160,7 @@ void GLManager::render(float delta_time)
 	if (reset)
 		reset_scene();
 
-	if(show_cursor)
+	if(!show_cursor)
 		glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	else
 		glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -197,6 +197,11 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 			camera.set_x_mov(1);
 		else if (key_code == GLFW_KEY_D)
 			camera.set_x_mov(-1);
+
+		if (key_code == GLFW_KEY_LEFT_CONTROL)
+			camera.set_y_mov(1);
+		else if (key_code == GLFW_KEY_SPACE)
+			camera.set_y_mov(-1);
 
 		//camera look rotation
 		if (key_code == GLFW_KEY_E)
@@ -255,6 +260,8 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 		if (key_code == GLFW_KEY_KP_ADD || key_code == GLFW_KEY_KP_SUBTRACT)
 			light_movement.y = 0;
 
+		if (key_code == GLFW_KEY_LEFT_CONTROL || key_code == GLFW_KEY_SPACE)
+			camera.set_y_mov(0);
 	}
 }
 
