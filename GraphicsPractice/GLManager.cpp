@@ -15,6 +15,8 @@ Camera GLManager::camera;
 
 bool GLManager::close = false;
 
+bool GLManager::show_cursor = false;
+
 glm::vec2 GLManager::cursor_movement;
 
 void GLManager::reset_scene()
@@ -139,6 +141,7 @@ void GLManager::render(float delta_time)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	camera.update(delta_time, cursor_movement);
+	cursor_movement = glm::vec2(0);
 
 	//set projection and view matrix inside the shader
 	glm::mat4 projection = glm::perspective(glm::radians(12.f), aspect_ratio, 0.1f, 100.f);
@@ -156,6 +159,11 @@ void GLManager::render(float delta_time)
 
 	if (reset)
 		reset_scene();
+
+	if(show_cursor)
+		glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	else
+		glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void GLManager::terminate()
@@ -225,6 +233,9 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 
 		if (key_code == GLFW_KEY_ESCAPE)
 			close = true;
+
+		if (key_code == GLFW_KEY_TAB)
+			show_cursor = !show_cursor;
 		
 	}
 	else if(action == GLFW_RELEASE)
@@ -249,15 +260,14 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 
 void GLManager::cursor_moved_callback(GLFWwindow * window, double xpos, double ypos)
 {
-	static double prev_xpos = 0;
-	static double prev_ypos = 0;
+	static int prev_xpos = 0;
+	static int prev_ypos = 0;
 
-	cursor_movement.x = xpos - prev_xpos;
-	cursor_movement.y = ypos - prev_ypos;
+	cursor_movement.x = floor(xpos) - prev_xpos;
+	cursor_movement.y = floor(ypos) - prev_ypos;
 
-
-	prev_xpos = xpos;
-	prev_ypos = ypos;
+	prev_xpos = floor(xpos);
+	prev_ypos = floor(ypos);
 }
 
 

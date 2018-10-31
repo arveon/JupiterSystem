@@ -45,8 +45,10 @@ private:
 	static glm::vec3 light_movement;
 	static GLuint colour_mode;
 	static GLuint sphere_drawmode;
-	static bool reset;
 	static GLshort delta_time;
+
+	static bool reset;
+	static bool show_cursor;
 	static bool close;
 
 	void reset_scene();
