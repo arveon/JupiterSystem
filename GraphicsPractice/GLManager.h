@@ -4,6 +4,7 @@
 #pragma comment(lib, "glfw3D.lib")
 #pragma comment(lib, "glew32sd.lib")
 #pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "soil.lib")
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -12,7 +13,10 @@
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <SOIL.h>
+
 #include <stack>
+#include <ctime>
 
 #include "EventManager.h"
 #include "ShaderManager.h"
@@ -34,6 +38,10 @@ private:
 	EventManager events;
 	Shader basic_shader = NULL;
 	Shader lightsource_shader = NULL;
+
+	GLuint jupiter_tex;
+	GLuint big_moons_tex[4];
+	GLuint asteroids_tex[3];
 	
 	std::vector<Planet*> bodies;
 	

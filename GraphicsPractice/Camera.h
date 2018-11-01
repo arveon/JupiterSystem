@@ -29,6 +29,8 @@ public:
 	void set_y_rot(int y) { rotation_dir.y = y; }
 	void set_z_rot(int z) { rotation_dir.z = z; }
 
+	void reset();
+
 	glm::mat4 get_view_matrix() { return view_matrix; }
 	Camera();
 	~Camera();

@@ -12,11 +12,17 @@ protected:
 	GLuint buffer_id;
 	GLuint normal_buffer;
 	GLuint model_uniform_id;
+	GLuint tex_coords_buffer;
+
+	GLuint texture_id;
 
 	Shader shader_program = NULL;
 
 	float *verts = nullptr;
-	float *normals= nullptr;
+	float *normals = nullptr;
+	float *texture_coords = nullptr;
+	
+	
 	int num_verts;
 
 	glm::mat4 model_matrix;
@@ -29,7 +35,8 @@ public:
 	Drawable() {};
 	~Drawable();
 	
-	void init(Shader shader_program, float* vertices, int num_verts, float* normals = nullptr);
+	bool tex_enabled;
+	void init(Shader shader_program, float* vertices, int num_verts, float* normals = nullptr, float* texcoords = nullptr);
 	
 	void draw();
 	void set_model_matrix(glm::mat4 model_matrix);

@@ -6,15 +6,19 @@ in vec4 fcolour;
 
 in vec3 fposition, fnormal, flightpos;
 in vec4 fdiffuse, fspecular, fambient;
+in vec2 ftexCoords;
 
 out vec4 outputColor;
 uniform float shininess = 10;
-
+uniform sampler2D tex;
 
 uniform bool attenuation_enabled;
 
 void main()
 {
+	//get texture color
+	vec4 texcolor = texture(tex, ftexCoords);
+
 	//get light direction and distance to light
 	vec3 to_light = flightpos - fposition;
 	float distance_to_light = length(to_light);
@@ -36,5 +40,5 @@ void main()
 		attenuation = 1.0 / (k1 + k1*distance_to_light + k1*pow(distance_to_light, 2));
 	}
 
-	outputColor = attenuation*(diffuse + specular) + fambient;
+	outputColor = attenuation*texcolor*(diffuse + specular) + texcolor*fambient;
 }

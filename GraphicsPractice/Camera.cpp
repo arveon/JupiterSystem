@@ -34,9 +34,29 @@ void Camera::update(float dt, glm::vec2 cursor_deltas)
 	view_matrix = rotation_mat * translate;
 }
 
+void Camera::reset()
+{
+	movement = glm::vec3(0);
+	rotation = glm::vec3(0);
+	movement.z = -20;
+	view_matrix = glm::lookAt(
+		glm::vec3(0, 0, -20),
+		glm::vec3(0, 0, 0),
+		glm::vec3(0, 1, 0)
+	);
+
+}
+
 Camera::Camera()
 {
+	movement = glm::vec3(0);
+	rotation = glm::vec3(0);
 	movement.z = -20;
+	view_matrix = glm::lookAt(
+		glm::vec3(0, 0, -20),
+		glm::vec3(0, 0, 0),
+		glm::vec3(0, 1, 0)
+	);
 }
 
 

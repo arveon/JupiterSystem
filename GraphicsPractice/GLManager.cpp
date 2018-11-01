@@ -22,12 +22,13 @@ glm::vec2 GLManager::cursor_movement;
 void GLManager::reset_scene()
 {
 	sun.move_to(glm::vec4(0, 0, 0, 1));
+	camera.reset();
 	reset = false;
 }
 
 GLManager::GLManager()
 {
-	
+	srand(time(0));
 }
 
 
@@ -62,11 +63,12 @@ void GLManager::init()
 	events.set_key_callback(win, key_callback);
 	events.set_cursor_callback(win, cursor_moved_callback);
 
+	//load required shaders
 	try
 	{
 		basic_shader = ShaderManager::load_shader("../shaders/basic.vert", "../shaders/basic.frag");
 		basic_shader.init_shader(aspect_ratio, BASIC_SHADER);
-		basic_shader.set_shininess(20);
+		basic_shader.set_shininess(2);
 
 		lightsource_shader = ShaderManager::load_shader( "../shaders/lightsource.vert","../shaders/lightsource.frag");
 		lightsource_shader.init_shader(aspect_ratio, LIGHTSOURCE_SHADER);
@@ -78,41 +80,72 @@ void GLManager::init()
 		exit(EXIT_FAILURE);
 	}
 
+	//load required textures
+	try
+	{
+		jupiter_tex = SOIL_load_OGL_texture("..\\textures\\jupiter.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		big_moons_tex[0] = SOIL_load_OGL_texture("..\\textures\\io.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		big_moons_tex[1] = SOIL_load_OGL_texture("..\\textures\\europa.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		big_moons_tex[2] = SOIL_load_OGL_texture("..\\textures\\ganymede.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		big_moons_tex[3] = SOIL_load_OGL_texture("..\\textures\\callisto.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+
+		asteroids_tex[0] = SOIL_load_OGL_texture("..\\textures\\asteroid1.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		asteroids_tex[1] = SOIL_load_OGL_texture("..\\textures\\asteroid2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		asteroids_tex[2] = SOIL_load_OGL_texture("..\\textures\\asteroid3.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+
+		if (jupiter_tex == 0 || big_moons_tex[0] == 0 || big_moons_tex[1] == 0 || big_moons_tex[2] == 0 || big_moons_tex[3] == 0
+			|| asteroids_tex[0] || asteroids_tex[1] || asteroids_tex[2])
+			std::cerr << "Error loading texture: " << SOIL_last_result();
+
+		/*int loc = glGetUniformLocation(basic_shader.get_program_id(), "tex");
+		if (loc >= 0) glUniform1i(loc, 0);*/
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Couldn't load a texture." << std::endl;
+	}
+
+
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0, 0, 0, 1);
+
+	// Enable face culling. This will cull the back faces of all
+	// triangles. Be careful to ensure that triangles are drawn
+	// with correct winding.
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	init_objects();
 }
 
 void GLManager::init_objects()
 {
-	Sphere* sp = new Sphere(basic_shader);
+	Sphere* sp = new Sphere(basic_shader, jupiter_tex);
 	sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 	bodies.push_back(new Planet(.1f, .2f, 0, sp, nullptr, 10.f));
 
 	//make 4 big normal moons
 	for (int i = 0; i < 4; i++)
 	{
-		float speed = (rand()%20/100.f + 0.1f);
+		float speed = (rand()%10/100.f + 0.3f);
 		std::cout << speed << std::endl;
-		Sphere* sp = new Sphere(basic_shader);
+		Sphere* sp = new Sphere(basic_shader, big_moons_tex[i]);
 		sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 		bodies.push_back(new Planet(speed, .1f, rand() % 360, sp, bodies.at(0), 3.f+(i*2.5f)));
 	}
 
 	//make 10 small moons
-	for (int i = 0; i < 70; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		float speed = (rand() % 20 / 100.f + 0.1f);
 		std::cout << speed << std::endl;
-		Sphere* sp = new Sphere(basic_shader);
+		Sphere* sp = new Sphere(basic_shader, asteroids_tex[rand()%3]);
 		sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
-		bodies.push_back(new Planet(speed, rand()%3/100 + 0.03, rand() % 360, sp, bodies.at(0), 20.f + rand()%5+10.f));
+		bodies.push_back(new Planet(speed, rand()%3/100 + 0.03, rand() % 360, sp, bodies.at(0), 20.f + rand()%15+10.f));
 	}
 
 	sun = Lightsource(lightsource_shader);
 	sun.set_scale(glm::vec3( .3f, .3f, .3f));
-	
 }
 
 void GLManager::loop()
@@ -155,7 +188,7 @@ void GLManager::render(float delta_time)
 	sun.draw();
 
 	basic_shader.set_color_mode(colour_mode);
-	basic_shader.set_light_position(sun.get_position());
+	basic_shader.set_light_position(camera.get_view_matrix()*sun.get_position());
 
 	if (reset)
 		reset_scene();
@@ -267,11 +300,20 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 
 void GLManager::cursor_moved_callback(GLFWwindow * window, double xpos, double ypos)
 {
-	static int prev_xpos = 0;
-	static int prev_ypos = 0;
+	static int prev_xpos = NULL;
+	static int prev_ypos = NULL;
 
-	cursor_movement.x = floor(xpos) - prev_xpos;
-	cursor_movement.y = floor(ypos) - prev_ypos;
+	if (!show_cursor)
+	{
+		if (prev_xpos == NULL)
+		{
+			prev_xpos = xpos;
+			prev_ypos = ypos;
+		}
+
+		cursor_movement.x = floor(xpos) - prev_xpos;
+		cursor_movement.y = floor(ypos) - prev_ypos;
+	}
 
 	prev_xpos = floor(xpos);
 	prev_ypos = floor(ypos);

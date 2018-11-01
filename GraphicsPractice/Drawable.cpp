@@ -1,14 +1,13 @@
 #include "Drawable.h"
 
 
-void Drawable::init(Shader shader_program, float* vertices, int num_verts, float* normals)
+void Drawable::init(Shader shader_program, float* vertices, int num_verts, float* normals, float* texcoords)
 {
 	this->shader_program = shader_program;
 	verts = vertices;
 	this->normals = normals;
 	this->num_verts = num_verts;
-
-	
+	this->texture_coords = texcoords;
 
 	load_into_memory();
 }
@@ -32,7 +31,6 @@ void Drawable::load_into_memory()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VALUES_PER_NORMAL * num_verts, normals, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-
 }
 
 void Drawable::draw()

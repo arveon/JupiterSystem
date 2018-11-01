@@ -4,8 +4,10 @@ class Planet
 {
 private:
 	float rotation_speed = 1;
+	float y_rot_speed;
 	float scale;
 	float cur_angle;
+	float cur_y_angle;
 
 	Sphere* sphere;
 	Planet* parent = nullptr;

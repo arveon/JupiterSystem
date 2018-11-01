@@ -18,7 +18,8 @@ class Sphere : public Drawable
 private:
 	Shader shader = NULL;
 public:
-	Sphere(Shader shader);
+
+	Sphere(Shader shader, GLuint textureID = NULL);
 	Sphere() {}
 	~Sphere();
 
@@ -34,6 +35,7 @@ public:
 	GLuint attribute_v_coord;
 	GLuint attribute_v_normal;
 	GLuint attribute_v_colours;
+	GLuint attribute_v_tex_coord;
 
 	int numspherevertices;
 	int numlats;
@@ -41,7 +43,7 @@ public:
 	int drawmode;
 
 private:
-	void makeUnitSphere(GLfloat *pVertices);
+	void makeUnitSphere(GLfloat *pVertices, GLfloat* pTexCoords);
 };
 
 

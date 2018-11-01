@@ -10,7 +10,7 @@
 class Lightsource
 {
 private:
-	Sphere sphere = NULL;
+	Sphere sphere;
 
 	glm::vec4 light_position;
 	glm::vec3 scale;
