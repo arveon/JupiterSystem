@@ -31,6 +31,23 @@ void GLManager::reset_scene()
 GLManager::GLManager()
 {
 	srand(time(0));
+
+	std::cout << "Hello and welcome to this very inaccurate Jupiter system simulator." << std::endl;
+	std::cout << "You are playing as a god. You can freely fly around and control the flow of time and the behavior of light." << std::endl;
+	std::cout << "You can also move the Sun if you wish to." << std::endl;
+
+	std::cout << "Use the mouse to look around." << std::endl;
+	std::cout << "WASD - fly around." << std::endl;
+	std::cout << "Space/Ctrl - to fly up and down." << std::endl;
+	std::cout << "< > - to speed up/slow down the time." << std::endl;
+	std::cout << "Arrow keys - To move the Sun along the x and y axis." << std::endl;
+	std::cout << "Keypad + and - - To move the Sun along the z axis." << std::endl;
+	std::cout << "Tab - To gain control of the mouse. And to return back to mouse captured mode." << std::endl;
+	std::cout << "R - To reset the world to it's initial state in case something goes wrong (and the camera position and rotation)." << std::endl;
+	std::cout << "T - To toggle the surface textures on and off." << std::endl;
+	std::cout << "X - To toggle attenuation on and off." << std::endl;
+	std::cout << "Esc - To close the simulator." << std::endl;
+	std::cout << "Please wait a few seconds while the simulation loads all your godly powers." << std::endl;
 }
 
 
@@ -58,7 +75,7 @@ void GLManager::init()
 		/* Problem: glewInit failed, something is seriously wrong. */
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
-	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+	//fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
 	events.set_error_callback(error_callback);
 	events.set_reshape_callback(win, resize_callback);
@@ -256,12 +273,6 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 		else if (key_code == GLFW_KEY_SPACE)
 			camera.set_y_mov(-1);
 
-		//camera look rotation
-		if (key_code == GLFW_KEY_E)
-			camera.set_y_rot(1);
-		else if (key_code == GLFW_KEY_Q)
-			camera.set_y_rot(-1);
-
 		//light movement
 		if (key_code == GLFW_KEY_UP)
 			light_movement.z = -LIGHT_MOVEMENT_SPEED;
@@ -275,12 +286,6 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 			light_movement.y = LIGHT_MOVEMENT_SPEED;
 		else if (key_code == GLFW_KEY_KP_SUBTRACT)
 			light_movement.y = -LIGHT_MOVEMENT_SPEED;
-
-		//color mode
-		if (key_code == GLFW_KEY_0)
-			colour_mode = 0;
-		else if (key_code == GLFW_KEY_1)
-			colour_mode = 1;
 
 		//reset
 		if (key_code == GLFW_KEY_R)

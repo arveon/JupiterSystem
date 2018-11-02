@@ -54,11 +54,6 @@ void Drawable::load_into_memory()
 		glBindBuffer(GL_ARRAY_BUFFER, tex_coords_buffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_verts, texture_coords, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		for (int i = 0; i < num_verts; i += 2)
-		{
-			std::cerr << texture_coords[i] << " " << texture_coords[i + 1] << std::endl;
-		}
 	}
 }
 
