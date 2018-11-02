@@ -57,7 +57,9 @@ private:
 	static glm::vec3 light_movement;
 	static GLuint colour_mode;
 	static GLuint sphere_drawmode;
-	static GLshort delta_time;
+	static float unaffected_time;
+
+	static int speed;
 
 	static bool reset;
 	static bool show_cursor;

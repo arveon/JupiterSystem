@@ -7,7 +7,8 @@ GLfloat GLManager::aspect_ratio;
 GLuint GLManager::colour_mode;
 GLuint GLManager::sphere_drawmode;
 
-GLshort GLManager::delta_time = 0;
+float GLManager::unaffected_time = 0;
+int GLManager::speed = 300;
 
 Camera GLManager::camera;
 
@@ -24,6 +25,7 @@ void GLManager::reset_scene()
 	sun.move_to(glm::vec4(0, 0, 0, 1));
 	camera.reset();
 	reset = false;
+	speed = 300;
 }
 
 GLManager::GLManager()
@@ -115,8 +117,8 @@ void GLManager::init()
 	// Enable face culling. This will cull the back faces of all
 	// triangles. Be careful to ensure that triangles are drawn
 	// with correct winding.
-	/*glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);*/
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	init_objects();
 }
@@ -136,17 +138,15 @@ void GLManager::init_objects()
 	for (int i = 0; i < 4; i++)
 	{
 		float speed = (rand()%10/100.f + 0.3f);
-		std::cout << speed << std::endl;
 		Sphere* sp = new Sphere(basic_shader, big_moons_tex[i]);
 		sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 		bodies.push_back(new Planet(speed, .1f, rand() % 360, sp, bodies.at(0), 3.f+(i*2.5f)));
 	}
 
-	//make 10 small moons
+	//make 20 small moons
 	for (int i = 0; i < 20; i++)
 	{
 		float speed = (rand() % 20 / 100.f + 0.1f);
-		std::cout << speed << std::endl;
 		Sphere* sp = new Sphere(basic_shader, asteroids_tex[rand()%3]);
 		sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 		bodies.push_back(new Planet(speed, rand()%3/100 + 0.03, rand() % 360, sp, bodies.at(0), 20.f + rand()%15+10.f));
@@ -164,7 +164,8 @@ void GLManager::loop()
 	while (!glfwWindowShouldClose(win))
 	{
 		static float prev_time = 0;
-		float delta_time = (glfwGetTime() - prev_time) * 300;
+		unaffected_time = (glfwGetTime() - prev_time);
+		float delta_time = unaffected_time * speed;
 		prev_time = glfwGetTime();
 
 		render(delta_time);
@@ -183,7 +184,7 @@ void GLManager::render(float delta_time)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	camera.update(delta_time, cursor_movement);
+	camera.update(unaffected_time, cursor_movement);
 	cursor_movement = glm::vec2(0);
 
 	//set projection and view matrix inside the shader
@@ -304,6 +305,12 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 		//toggle texture
 		if (key_code == GLFW_KEY_T)
 			texture_enabled = !texture_enabled;
+
+		//time speed changes
+		if (key_code == GLFW_KEY_PERIOD)
+			speed += 30;
+		if (key_code == GLFW_KEY_COMMA)
+			speed -= 30;
 		
 	}
 	else if(action == GLFW_RELEASE)
