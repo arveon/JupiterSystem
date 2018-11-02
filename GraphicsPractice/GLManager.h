@@ -38,7 +38,9 @@ private:
 	EventManager events;
 	Shader basic_shader = NULL;
 	Shader lightsource_shader = NULL;
+	Shader unlit_texture_shader = NULL;
 
+	GLuint skybox_tex;
 	GLuint jupiter_tex;
 	GLuint big_moons_tex[4];
 	GLuint asteroids_tex[3];

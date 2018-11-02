@@ -1,5 +1,5 @@
 #pragma once
-#define VALUES_PER_VERT 8
+#define VALUES_PER_VERT 4
 #define VALUES_PER_NORMAL 3
 #define NUM_TRIANGLE_VERTS 3
 #define NUM_SQR_VERTS 6
@@ -15,6 +15,7 @@
 
 #define LIGHTSOURCE_SHADER 1
 #define BASIC_SHADER 2
+#define SKYBOX_SHADER 3
 
 #define CAMERA_MOVEMENT_SPEED 0.01f
 #define CAMERA_ROTATION_SPEED 0.01f

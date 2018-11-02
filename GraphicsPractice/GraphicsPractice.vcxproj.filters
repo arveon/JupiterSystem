@@ -103,5 +103,11 @@
     <None Include="..\shaders\lightsource.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\shaders\unlit_textured.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\shaders\unlit_textured.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -31,17 +31,19 @@ void Shader::init_shader(GLfloat aspect_ratio, int type)
 		glm::vec4 pos = glm::vec4(0, 0, 0, 1);
 		glUniform4fv(light_position_uniform_id, 1, &pos[0]);
 
-		//allocate modelview matrix
+		//allocate view matrix
 		view_uniform_id = glGetUniformLocation(program, "view");
 		glm::mat4 model = glm::mat4(1.f);
 		glUniformMatrix4fv(view_uniform_id, 1, GL_FALSE, &model[0][0]);
 
 		texture_enabled_uniform_id = glGetUniformLocation(program, "texture_enabled");
-		glUniform1i(texture_enabled_uniform_id, true);
+		glUniform1i(texture_enabled_uniform_id, false);
 
 		attenuation_enabled_uniform_id = glGetUniformLocation(program, "attenuation_enabled");
 		glUniform1i(attenuation_enabled_uniform_id, true);
 	}
+
+
 
 	glUseProgram(0);
 }

@@ -44,4 +44,6 @@ void main()
 	}
 
 	outputColor = attenuation*texcolor*(diffuse + specular) + texcolor*fambient;
+	//outputColor = vec4(1,0,0,1);
+	//outputColor = fcolour;
 }

@@ -72,6 +72,9 @@ void GLManager::init()
 
 		lightsource_shader = ShaderManager::load_shader( "../shaders/lightsource.vert","../shaders/lightsource.frag");
 		lightsource_shader.init_shader(aspect_ratio, LIGHTSOURCE_SHADER);
+
+		unlit_texture_shader = ShaderManager::load_shader("../shaders/unlit_textured.vert", "../shaders/unlit_textured.frag");
+		unlit_texture_shader.init_shader(aspect_ratio, LIGHTSOURCE_SHADER);
 	}
 	catch (std::exception e)
 	{
@@ -83,6 +86,7 @@ void GLManager::init()
 	//load required textures
 	try
 	{
+		skybox_tex = SOIL_load_OGL_texture("..\\textures\\skybox.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		jupiter_tex = SOIL_load_OGL_texture("..\\textures\\jupiter.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		big_moons_tex[0] = SOIL_load_OGL_texture("..\\textures\\io.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		big_moons_tex[1] = SOIL_load_OGL_texture("..\\textures\\europa.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
@@ -94,11 +98,11 @@ void GLManager::init()
 		asteroids_tex[2] = SOIL_load_OGL_texture("..\\textures\\asteroid3.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
 		if (jupiter_tex == 0 || big_moons_tex[0] == 0 || big_moons_tex[1] == 0 || big_moons_tex[2] == 0 || big_moons_tex[3] == 0
-			|| asteroids_tex[0] || asteroids_tex[1] || asteroids_tex[2])
-			std::cerr << "Error loading texture: " << SOIL_last_result();
+			|| asteroids_tex[0] == 0 || asteroids_tex[1] == 0 || asteroids_tex[2] == 0 || skybox_tex == 0)
+			std::cerr << "Error loading texture: " << SOIL_last_result() << std::endl;
 
-		/*int loc = glGetUniformLocation(basic_shader.get_program_id(), "tex");
-		if (loc >= 0) glUniform1i(loc, 0);*/
+		int loc = glGetUniformLocation(basic_shader.get_program_id(), "tex");
+		if (loc >= 0) glUniform1i(loc, 0);
 	}
 	catch (std::exception &e)
 	{
@@ -111,15 +115,18 @@ void GLManager::init()
 	// Enable face culling. This will cull the back faces of all
 	// triangles. Be careful to ensure that triangles are drawn
 	// with correct winding.
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	/*glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);*/
 
 	init_objects();
 }
 
 void GLManager::init_objects()
 {
-	cube = new Cube(basic_shader);
+	cube = new Cube();
+	cube->colours_enabled = false;
+	cube->normals_enabled = false;
+	cube->init(unlit_texture_shader, skybox_tex);
 
 	Sphere* sp = new Sphere(basic_shader, jupiter_tex);
 	sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
@@ -180,15 +187,19 @@ void GLManager::render(float delta_time)
 	cursor_movement = glm::vec2(0);
 
 	//set projection and view matrix inside the shader
-	glm::mat4 projection = glm::perspective(glm::radians(12.f), aspect_ratio, 0.1f, 100.f);
+	glm::mat4 projection = glm::perspective(glm::radians(12.f), aspect_ratio, 0.1f, 200.f);
 	basic_shader.set_projection_matrix(projection);
 	lightsource_shader.set_projection_matrix(projection);
+	unlit_texture_shader.set_projection_matrix(projection);
 
 	cube->set_view_matrix(camera.get_view_matrix());
+	cube->scale(glm::vec3(100, 100, 100));
+
 	sun.set_view_matrix(camera.get_view_matrix());
 	for (Planet* p : bodies)
 		p->draw(camera.get_view_matrix(), delta_time, sphere_drawmode);
-	cube->translate(glm::vec3(2,-2,0));
+
+	cube->draw();
 	sun.shift(glm::vec3(light_movement.x*delta_time, light_movement.y*delta_time, light_movement.z*delta_time));
 	sun.draw();
 

@@ -156,6 +156,8 @@
     <None Include="..\shaders\basic.vert" />
     <None Include="..\shaders\lightsource.frag" />
     <None Include="..\shaders\lightsource.vert" />
+    <None Include="..\shaders\unlit_textured.frag" />
+    <None Include="..\shaders\unlit_textured.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,10 +1,11 @@
 #include "Drawable.h"
 
 
-void Drawable::init(Shader shader_program, float* vertices, int num_verts, float* normals, float* texcoords, int tex_id)
+void Drawable::init(Shader shader_program, float* vertices, int num_verts, float* colours, float* normals, float* texcoords, int tex_id)
 {
 	this->shader_program = shader_program;
 	verts = vertices;
+	this->colours = colours;
 	this->normals = normals;
 	this->num_verts = num_verts;
 	
@@ -25,15 +26,24 @@ Drawable::~Drawable()
 
 void Drawable::load_into_memory()
 {
-	glGenBuffers(1, &buffer_id);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+	glGenBuffers(1, &vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VALUES_PER_VERT * num_verts, verts, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	if (normals != nullptr)
+	if (colours_enabled)
 	{
-		glGenBuffers(1, &normal_buffer);
-		glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
+		glGenBuffers(1, &colour_buffer_id);
+		glBindBuffer(GL_ARRAY_BUFFER, colour_buffer_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VALUES_PER_VERT * num_verts, colours, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+
+	if (normals_enabled)
+	{
+		glGenBuffers(1, &normal_buffer_id);
+		glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_id);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VALUES_PER_NORMAL * num_verts, normals, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -44,27 +54,37 @@ void Drawable::load_into_memory()
 		glBindBuffer(GL_ARRAY_BUFFER, tex_coords_buffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_verts, texture_coords, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		for (int i = 0; i < num_verts; i += 2)
+		{
+			std::cerr << texture_coords[i] << " " << texture_coords[i + 1] << std::endl;
+		}
 	}
 }
 
 void Drawable::draw()
 {
-	glUseProgram(shader_program.get_program_id());
-	//shader_program.set_model_matrix(model_matrix);
 	shader_program.set_model_view_matrix(view_matrix * model_matrix);
-	shader_program.set_view_matrix(view_matrix);
 
-	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+	glUseProgram(shader_program.get_program_id());	
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, VALUES_PER_VERT/2, GL_FLOAT, GL_FALSE, sizeof(float) * VALUES_PER_VERT, 0);//stride = bytes from start of first element to start of next
-																						//pointer is int of where to start
-																						//describe colour data
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, VALUES_PER_VERT / 2, GL_FLOAT, GL_FALSE, sizeof(float) * VALUES_PER_VERT, (char*)(sizeof(float) * VALUES_PER_VERT / 2));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, VALUES_PER_NORMAL, GL_FLOAT, GL_FALSE, 0, 0);
+	if (colours_enabled)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, colour_buffer_id);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, VALUES_PER_VERT, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+
+	if (normals_enabled)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_id);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, VALUES_PER_NORMAL, GL_FLOAT, GL_FALSE, 0, 0);
+	}
 
 	if (tex_enabled)
 	{
@@ -76,16 +96,19 @@ void Drawable::draw()
 	}
 	
 	// Define triangle winding as counter-clockwise
-	glFrontFace(GL_CCW);
+	//glFrontFace(GL_CCW);
+	glPointSize(3.f);
 
 	glDrawArrays(GL_TRIANGLES, 0, num_verts);
+
+	if (tex_enabled)
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);
 
 	//reset matrices
 	this->model_matrix = glm::mat4(1.0f);
-	this->view_matrix = glm::mat4(1.0f);
 }
 
 void Drawable::set_model_matrix(glm::mat4 model_matrix)

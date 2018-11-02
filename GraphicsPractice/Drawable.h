@@ -9,8 +9,9 @@
 class Drawable
 {
 protected:
-	GLuint buffer_id;
-	GLuint normal_buffer;
+	GLuint vertex_buffer_id;
+	GLuint colour_buffer_id;
+	GLuint normal_buffer_id;
 	GLuint model_uniform_id;
 	GLuint tex_coords_buffer;
 
@@ -19,6 +20,7 @@ protected:
 	Shader shader_program = NULL;
 
 	float *verts = nullptr;
+	float *colours = nullptr;
 	float *normals = nullptr;
 	float *texture_coords = nullptr;
 	
@@ -31,12 +33,14 @@ protected:
 	glm::vec3 center_position = glm::vec4(0);
 
 	void load_into_memory();
+	virtual void init(Shader shader_program, float* vertices, int num_verts, float* colours, float* normals = nullptr, float* texcoords = nullptr, int tex_id = NULL);
 public:
 	Drawable() {};
 	~Drawable();
 	
 	bool tex_enabled;
-	void init(Shader shader_program, float* vertices, int num_verts, float* normals = nullptr, float* texcoords = nullptr, int tex_id = NULL);
+	bool normals_enabled;
+	bool colours_enabled;
 	
 	void draw();
 	void set_model_matrix(glm::mat4 model_matrix);
