@@ -193,7 +193,7 @@ void GLManager::render(float delta_time)
 	unlit_texture_shader.set_projection_matrix(projection);
 
 	cube->set_view_matrix(camera.get_view_matrix());
-	cube->scale(glm::vec3(100, 100, 100));
+	cube->scale(glm::vec3(100, 50, 100));
 
 	sun.set_view_matrix(camera.get_view_matrix());
 	for (Planet* p : bodies)
