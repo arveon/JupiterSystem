@@ -111,10 +111,39 @@ private:
 		0, 1.f, 0, 0, 1.f, 0, 0, 1.f, 0
 	};
 
+	GLfloat texcoords[NUM_CUBE_VERTS*2] =
+	{
+		// Face 0
+		0, 1.f, 0, 0, 1.f, 0,
+		1.f, 0, 1.f, 1.f, 0, 1.f,
+
+		// Face 1
+		1.0, 0.f, 0.f, 0.f, 1.f, 1.f,
+		0.f, 0.f, 0.f, 1.f, 1.f, 1.f,
+
+		// Face 2
+		1.f, 0.f, 0.f, 0.f, 1.f, 1.f,
+		0.f, 0.f, 0.f, 1.f, 1.f, 1.f,
+
+		// Face 3
+		1.f, 0.f, 0.f, 0.f, 1.f, 1.f,
+		0.f, 0.f, 0.f, 1.f, 1.f, 1.f,
+
+		// Face 4
+		0.f, 0.f, 1.f, 0.f, 1.f, 1.f,
+		1.f, 1.f, 0.f, 1.f, 0.f, 0.f,
+
+		// Face 5
+		0.f, 1.f, 1.f, 1.f, 1.f, 0.f,
+		1.f, 0.f, 0.f, 0.f, 0.f, 1.f
+	};
+
 public:
+	
 	Cube(Shader shader_program) : Drawable()
 	{
-		this->init(shader_program, verts, num_verts, normals);
+		this->init(shader_program, verts, num_verts, normals, texcoords);
 	}
+	Cube() {}
 	~Cube() {}
 };

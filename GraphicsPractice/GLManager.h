@@ -44,6 +44,8 @@ private:
 	GLuint asteroids_tex[3];
 	
 	std::vector<Planet*> bodies;
+
+	Cube* cube;
 	
 	Lightsource sun;
 
@@ -57,6 +59,8 @@ private:
 
 	static bool reset;
 	static bool show_cursor;
+	static bool attenuation_enabled;
+	static bool texture_enabled;
 	static bool close;
 
 	void reset_scene();

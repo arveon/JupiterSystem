@@ -7,15 +7,15 @@ GLfloat GLManager::aspect_ratio;
 GLuint GLManager::colour_mode;
 GLuint GLManager::sphere_drawmode;
 
-bool GLManager::reset = false;
-
 GLshort GLManager::delta_time = 0;
 
 Camera GLManager::camera;
 
+bool GLManager::reset = false;
 bool GLManager::close = false;
-
 bool GLManager::show_cursor = false;
+bool GLManager::attenuation_enabled = true;
+bool GLManager::texture_enabled = true;
 
 glm::vec2 GLManager::cursor_movement;
 
@@ -105,7 +105,6 @@ void GLManager::init()
 		std::cerr << "Couldn't load a texture." << std::endl;
 	}
 
-
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0, 0, 0, 1);
 
@@ -120,6 +119,8 @@ void GLManager::init()
 
 void GLManager::init_objects()
 {
+	cube = new Cube(basic_shader);
+
 	Sphere* sp = new Sphere(basic_shader, jupiter_tex);
 	sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 	bodies.push_back(new Planet(.1f, .2f, 0, sp, nullptr, 10.f));
@@ -146,6 +147,8 @@ void GLManager::init_objects()
 
 	sun = Lightsource(lightsource_shader);
 	sun.set_scale(glm::vec3( .3f, .3f, .3f));
+
+	
 }
 
 void GLManager::loop()
@@ -181,9 +184,11 @@ void GLManager::render(float delta_time)
 	basic_shader.set_projection_matrix(projection);
 	lightsource_shader.set_projection_matrix(projection);
 
+	cube->set_view_matrix(camera.get_view_matrix());
 	sun.set_view_matrix(camera.get_view_matrix());
 	for (Planet* p : bodies)
 		p->draw(camera.get_view_matrix(), delta_time, sphere_drawmode);
+	cube->translate(glm::vec3(2,-2,0));
 	sun.shift(glm::vec3(light_movement.x*delta_time, light_movement.y*delta_time, light_movement.z*delta_time));
 	sun.draw();
 
@@ -197,6 +202,9 @@ void GLManager::render(float delta_time)
 		glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	else
 		glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+	basic_shader.set_attenuation_enabled(attenuation_enabled);
+	basic_shader.set_texture_enabled(texture_enabled);
 }
 
 void GLManager::terminate()
@@ -266,14 +274,25 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 		if (key_code == GLFW_KEY_R)
 			reset = true;
 
+		//change drawmode
 		if (key_code == GLFW_KEY_M)
 			sphere_drawmode = (sphere_drawmode > NUM_DRAWMODES) ? 1 : sphere_drawmode+1;
 
+		//close window
 		if (key_code == GLFW_KEY_ESCAPE)
 			close = true;
 
+		//toggle cursor
 		if (key_code == GLFW_KEY_TAB)
 			show_cursor = !show_cursor;
+
+		//toggle attenuation
+		if (key_code == GLFW_KEY_X)
+			attenuation_enabled = !attenuation_enabled;
+
+		//toggle texture
+		if (key_code == GLFW_KEY_T)
+			texture_enabled = !texture_enabled;
 		
 	}
 	else if(action == GLFW_RELEASE)

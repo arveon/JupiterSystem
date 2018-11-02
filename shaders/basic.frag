@@ -13,11 +13,14 @@ uniform float shininess = 10;
 uniform sampler2D tex;
 
 uniform bool attenuation_enabled;
+uniform bool texture_enabled;
 
 void main()
 {
 	//get texture color
-	vec4 texcolor = texture(tex, ftexCoords);
+	vec4 texcolor = vec4(1.f);
+	if(texture_enabled)
+		texcolor = texture(tex, ftexCoords);
 
 	//get light direction and distance to light
 	vec3 to_light = flightpos - fposition;

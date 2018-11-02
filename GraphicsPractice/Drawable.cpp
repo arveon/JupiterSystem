@@ -1,13 +1,19 @@
 #include "Drawable.h"
 
 
-void Drawable::init(Shader shader_program, float* vertices, int num_verts, float* normals, float* texcoords)
+void Drawable::init(Shader shader_program, float* vertices, int num_verts, float* normals, float* texcoords, int tex_id)
 {
 	this->shader_program = shader_program;
 	verts = vertices;
 	this->normals = normals;
 	this->num_verts = num_verts;
-	this->texture_coords = texcoords;
+	
+	if (tex_id != NULL && texcoords)
+	{
+		tex_enabled = true;
+		this->texture_coords = texcoords;
+		this->texture_id = tex_id;
+	}
 
 	load_into_memory();
 }
@@ -31,10 +37,19 @@ void Drawable::load_into_memory()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VALUES_PER_NORMAL * num_verts, normals, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
+
+	if (tex_enabled)
+	{
+		glGenBuffers(1, &tex_coords_buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, tex_coords_buffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * num_verts, texture_coords, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 }
 
 void Drawable::draw()
 {
+	glUseProgram(shader_program.get_program_id());
 	//shader_program.set_model_matrix(model_matrix);
 	shader_program.set_model_view_matrix(view_matrix * model_matrix);
 	shader_program.set_view_matrix(view_matrix);
@@ -51,12 +66,22 @@ void Drawable::draw()
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, VALUES_PER_NORMAL, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glUseProgram(shader_program.get_program_id());
+	if (tex_enabled)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, tex_coords_buffer);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+	}
+	
+	// Define triangle winding as counter-clockwise
+	glFrontFace(GL_CCW);
 
 	glDrawArrays(GL_TRIANGLES, 0, num_verts);
-	glUseProgram(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glUseProgram(0);
 
 	//reset matrices
 	this->model_matrix = glm::mat4(1.0f);

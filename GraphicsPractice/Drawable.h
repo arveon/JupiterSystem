@@ -36,7 +36,7 @@ public:
 	~Drawable();
 	
 	bool tex_enabled;
-	void init(Shader shader_program, float* vertices, int num_verts, float* normals = nullptr, float* texcoords = nullptr);
+	void init(Shader shader_program, float* vertices, int num_verts, float* normals = nullptr, float* texcoords = nullptr, int tex_id = NULL);
 	
 	void draw();
 	void set_model_matrix(glm::mat4 model_matrix);

@@ -36,6 +36,9 @@ void Shader::init_shader(GLfloat aspect_ratio, int type)
 		glm::mat4 model = glm::mat4(1.f);
 		glUniformMatrix4fv(view_uniform_id, 1, GL_FALSE, &model[0][0]);
 
+		texture_enabled_uniform_id = glGetUniformLocation(program, "texture_enabled");
+		glUniform1i(texture_enabled_uniform_id, true);
+
 		attenuation_enabled_uniform_id = glGetUniformLocation(program, "attenuation_enabled");
 		glUniform1i(attenuation_enabled_uniform_id, true);
 	}
@@ -89,6 +92,14 @@ void Shader::set_attenuation_enabled(GLboolean enabled)
 {
 	glUseProgram(program);
 	glUniform1i(attenuation_enabled_uniform_id, enabled);
+	glUseProgram(0);
+}
+
+void Shader::set_texture_enabled(GLboolean enabled)
+{
+	glUseProgram(program);
+	glUniform1i(texture_enabled_uniform_id, enabled);
+	glUseProgram(0);
 }
 
 Shader::Shader(GLuint program_id)
