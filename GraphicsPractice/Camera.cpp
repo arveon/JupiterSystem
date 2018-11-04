@@ -17,7 +17,7 @@ void Camera::update(float dt, glm::vec2 cursor_deltas)
 	glm::vec3 forward(view_matrix[0][2], view_matrix[1][2], view_matrix[2][2]);
 	glm::vec3 strafe(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
 	//calculate the final movement vector by adding forward and sideways movement components
-	movement += (direction.z * forward + direction.x * strafe) * CAMERA_MOVEMENT_SPEED * dt;
+	movement += (direction.z * forward * CAMERA_MOVEMENT_SPEED + direction.x * strafe * CAMERA_STRAFE_SPEED) * dt;
 
 	//add the up/down movement component
 	if (direction.y > 0)
