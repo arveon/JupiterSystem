@@ -4,9 +4,6 @@ glm::vec3 GLManager::light_movement;
 
 GLfloat GLManager::aspect_ratio;
 
-GLuint GLManager::colour_mode;
-GLuint GLManager::sphere_drawmode;
-
 float GLManager::unaffected_time = 0;
 int GLManager::speed = 300;
 
@@ -20,6 +17,7 @@ bool GLManager::texture_enabled = true;
 
 glm::vec2 GLManager::cursor_movement;
 
+///Function used to reset the scene (camera,  sun, time speed)
 void GLManager::reset_scene()
 {
 	sun.move_to(glm::vec4(0, 0, 0, 1));
@@ -55,6 +53,7 @@ GLManager::~GLManager()
 {
 }
 
+///Function used to initialise all of the required opengl components and load the required textures
 void GLManager::init()
 {
 	if (!glfwInit())
@@ -75,7 +74,6 @@ void GLManager::init()
 		/* Problem: glewInit failed, something is seriously wrong. */
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
-	//fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
 	events.set_error_callback(error_callback);
 	events.set_reshape_callback(win, resize_callback);
@@ -128,6 +126,7 @@ void GLManager::init()
 		std::cerr << "Couldn't load a texture." << std::endl;
 	}
 
+	//enable depth texting
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0, 0, 0, 1);
 
@@ -140,6 +139,7 @@ void GLManager::init()
 	init_objects();
 }
 
+///Function used to separate the object initialisation logic out
 void GLManager::init_objects()
 {
 	cube = new Cube();
@@ -147,6 +147,7 @@ void GLManager::init_objects()
 	cube->normals_enabled = false;
 	cube->init(unlit_texture_shader, skybox_tex);
 
+	//sphere that will represent Jupiter
 	Sphere* sp = new Sphere(basic_shader, jupiter_tex);
 	sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 	bodies.push_back(new Planet(.1f, .2f, 0, sp, nullptr, 10.f));
@@ -159,6 +160,11 @@ void GLManager::init_objects()
 		sp->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
 		bodies.push_back(new Planet(speed, .1f, rand() % 360, sp, bodies.at(0), 3.f+(i*2.5f)));
 	}
+
+	//a sphere that will rotate around the second moon of jupiter
+	Sphere* test = new Sphere(basic_shader, jupiter_tex);
+	test->makeSphere(NUM_LATS_SPHERE, NUM_LONGS_SPHERE);
+	bodies.push_back(new Planet(.5f, .05f, 0, test, bodies.at(2), 5.f));
 
 	//make 20 small moons
 	for (int i = 0; i < 20; i++)
@@ -180,6 +186,7 @@ void GLManager::loop()
 	glfwSetTime(0);
 	while (!glfwWindowShouldClose(win))
 	{
+		//calculate time from last tick
 		static float prev_time = 0;
 		unaffected_time = (glfwGetTime() - prev_time);
 		float delta_time = unaffected_time * speed;
@@ -196,37 +203,37 @@ void GLManager::loop()
 
 void GLManager::render(float delta_time)
 {
-	static float jp_scale = 0.3;
-	static float mn_scale = 0.1;
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	camera.update(unaffected_time, cursor_movement);
-	cursor_movement = glm::vec2(0);
+	cursor_movement = glm::vec2(0);//reset cursor delta movement every tick
 
-	//set projection and view matrix inside the shader
+	//set projection matrix in all shaders
 	glm::mat4 projection = glm::perspective(glm::radians(12.f), aspect_ratio, 0.1f, 200.f);
 	basic_shader.set_projection_matrix(projection);
 	lightsource_shader.set_projection_matrix(projection);
 	unlit_texture_shader.set_projection_matrix(projection);
 
+	//set view matrix in objects that need it
 	cube->set_view_matrix(camera.get_view_matrix());
-	cube->scale(glm::vec3(100, 50, 100));
-
 	sun.set_view_matrix(camera.get_view_matrix());
-	for (Planet* p : bodies)
-		p->draw(camera.get_view_matrix(), delta_time, sphere_drawmode);
 
+	//draw all planets
+	for (Planet* p : bodies)
+		p->draw(camera.get_view_matrix(), delta_time);
+
+	//manipulate and draw other objects
+	cube->scale(glm::vec3(100, 50, 100));
 	cube->draw();
 	sun.shift(glm::vec3(light_movement.x*delta_time, light_movement.y*delta_time, light_movement.z*delta_time));
 	sun.draw();
 
-	basic_shader.set_color_mode(colour_mode);
+	//set the light position in lit shader
 	basic_shader.set_light_position(camera.get_view_matrix()*sun.get_position());
 
+	//apply scene changes if specific flags were set
 	if (reset)
 		reset_scene();
-
 	if(!show_cursor)
 		glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	else
@@ -245,7 +252,6 @@ void GLManager::resize_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 	aspect_ratio = float(width) / float(height);
-	//aspect_ratio = ((float)width / 640.f*4.f) / ((float)height / 480.f*3.f);
 }
 
 void GLManager::error_callback(int error, const char* desc)
@@ -291,10 +297,6 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 		if (key_code == GLFW_KEY_R)
 			reset = true;
 
-		//change drawmode
-		if (key_code == GLFW_KEY_M)
-			sphere_drawmode = (sphere_drawmode > NUM_DRAWMODES) ? 1 : sphere_drawmode+1;
-
 		//close window
 		if (key_code == GLFW_KEY_ESCAPE)
 			close = true;
@@ -320,6 +322,7 @@ void GLManager::key_callback(GLFWwindow* window, int key_code, int scancode, int
 	}
 	else if(action == GLFW_RELEASE)
 	{
+		//reset speeds on key releases
 		if (key_code == GLFW_KEY_W || key_code == GLFW_KEY_S)
 			camera.set_z_mov(0);
 		if (key_code == GLFW_KEY_A || key_code == GLFW_KEY_D)
@@ -345,10 +348,10 @@ void GLManager::cursor_moved_callback(GLFWwindow * window, double xpos, double y
 	static int prev_xpos = NULL;
 	static int prev_ypos = NULL;
 
-	if (!show_cursor)
+	if (!show_cursor)//only keep track of cursor movement if its captured by window
 	{
 		if (prev_xpos == NULL)
-		{
+		{//safeguard against a jump at the first call, when these values aren't set yet (=> equal to 0)
 			prev_xpos = xpos;
 			prev_ypos = ypos;
 		}

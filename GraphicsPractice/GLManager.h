@@ -55,8 +55,6 @@ private:
 	static Camera camera;
 	static GLfloat aspect_ratio;
 	static glm::vec3 light_movement;
-	static GLuint colour_mode;
-	static GLuint sphere_drawmode;
 	static float unaffected_time;
 
 	static int speed;

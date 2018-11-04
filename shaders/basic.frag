@@ -2,16 +2,14 @@
 
 #version 420
 
-in vec4 fcolour;
-
 in vec3 fposition, fnormal, flightpos;
 in vec4 fdiffuse, fspecular, fambient;
 in vec2 ftexCoords;
 
 out vec4 outputColor;
-uniform float shininess = 10;
-uniform sampler2D tex;
 
+uniform float shininess;
+uniform sampler2D tex;
 uniform bool attenuation_enabled;
 uniform bool texture_enabled;
 
@@ -44,6 +42,4 @@ void main()
 	}
 
 	outputColor = attenuation*texcolor*(diffuse + specular) + texcolor*fambient;
-	//outputColor = vec4(1,0,0,1);
-	//outputColor = fcolour;
 }

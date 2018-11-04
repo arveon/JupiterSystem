@@ -14,6 +14,7 @@
 
 #include "Shader.h"
 
+//Class responsible for loading shaders
 class ShaderManager
 {
 public:

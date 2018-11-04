@@ -24,7 +24,6 @@ protected:
 	float *normals = nullptr;
 	float *texture_coords = nullptr;
 	
-	
 	int num_verts;
 
 	glm::mat4 model_matrix;

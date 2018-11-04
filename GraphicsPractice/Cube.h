@@ -7,65 +7,8 @@ class Cube : public Drawable
 private:
 	const int num_verts = NUM_CUBE_VERTS;
 
-	//GLfloat vers[NUM_CUBE_VERTS*VALUES_PER_VERT] =
-	//{
-	//	//face 1
-	//	-1, -1, -1,//0
-	//	1, -1, -1,//1
-	//	-1, 1, -1,//3
-
-	//	-1, 1, -1,//3
-	//	1, -1, -1,//1
-	//	1, 1, -1,//2
-
-	//	//face 2
-	//	1, -1, -1,//1
-	//	1, -1, 1,//5
-	//	1, 1, -1,//2
-
-	//	1, 1, -1,//2
-	//	1, -1, 1,//5
-	//	1, 1, 1,//6
-
-
-	//	//face 3
-	//	1, -1, 1,//5
-	//	-1, -1, 1,//4
-	//	1, 1, 1,//6
-
-	//	1, 1, 1,//6
-	//	-1, -1, 1,//4
-	//	-1, 1, 1,//7
-
-	//	//face 4
-	//	-1, -1, 1,//4
-	//	-1, -1, -1,//0
-	//	-1, 1, 1,//7
-
-	//	-1, 1, 1,//7
-	//	-1, -1, -1,//0
-	//	-1, 1, -1,//3
-
-	//	//face 5
-	//	-1, 1, -1,//3
-	//	1, 1, -1,//2
-	//	-1, 1, 1,//7
-
-	//	-1, 1, 1,//7
-	//	1, 1, -1,//2
-	//	1, 1, 1,//6
-
-	//	//face 6
-	//	-1, -1, 1,//4
-	//	1, -1, 1,//5
-	//	-1, -1, -1,//0
-
-	//	-1, -1, -1,//0
-	//	1, -1, 1,//5
-	//	1, -1, -1//1
-	//};
-
 	/* Define vertices for a cube in 12 triangles */
+	//changed some values to make sure there are no gaps between the sides of the cube (skybox)
 	GLfloat verts[NUM_CUBE_VERTS*VALUES_PER_VERT] =
 	{
 		// Face 0 back
@@ -240,6 +183,7 @@ private:
 public:
 	void init(Shader shader_program, GLuint texture_id = NULL)
 	{
+		//only pass texcoords to drawable if texture id is provided, otherwise assume no texture should be used
 		if (texture_id != NULL)
 			Drawable::init(shader_program, verts, num_verts, colours, normals, texcoords, texture_id);
 		else

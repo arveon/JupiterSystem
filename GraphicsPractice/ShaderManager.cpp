@@ -1,9 +1,6 @@
 #include "ShaderManager.h"
 
 
-
-
-
 Shader ShaderManager::load_shader(const char* vertex_shader_path, const char* fragment_shader_path)
 {
 	GLuint v_shader, f_shader;

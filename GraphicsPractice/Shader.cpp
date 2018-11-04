@@ -17,15 +17,10 @@ void Shader::init_shader(GLfloat aspect_ratio, int type)
 
 	if (type == BASIC_SHADER)
 	{
-		//allocate color_mode int and set it to 0
-		color_mode_id = glGetUniformLocation(program, "colour_mode");
-		GLuint mode = 1;
-		glUniform1ui(color_mode_id, mode);
-
 		//allocate shininess uniform and set to 10
 		shininess_uniform_id = glGetUniformLocation(program, "shininess");
 		GLuint shininess = 10;
-		glUniform1ui(shininess_uniform_id, mode);
+		glUniform1ui(shininess_uniform_id, shininess);
 
 		light_position_uniform_id = glGetUniformLocation(program, "light_position");	
 		glm::vec4 pos = glm::vec4(0, 0, 0, 1);
@@ -66,13 +61,6 @@ void Shader::set_model_view_matrix(glm::mat4 model_view)
 {
 	glUseProgram(program);
 	glUniformMatrix4fv(model_view_uniform_id, 1, GL_FALSE, &model_view[0][0]);
-	glUseProgram(0);
-}
-
-void Shader::set_color_mode(GLuint mode)
-{
-	glUseProgram(program);
-	glUniform1ui(color_mode_id, mode);
 	glUseProgram(0);
 }
 

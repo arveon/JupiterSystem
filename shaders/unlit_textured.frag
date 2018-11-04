@@ -1,4 +1,4 @@
-// Minimal fragment shader with fixed output colour
+// fragment shader that will only apply texture
 
 #version 420
 out vec4 outputColor;

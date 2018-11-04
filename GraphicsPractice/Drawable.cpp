@@ -3,6 +3,7 @@
 
 void Drawable::init(Shader shader_program, float* vertices, int num_verts, float* colours, float* normals, float* texcoords, int tex_id)
 {
+	//initialises shader, vertices, colors, normals etc if they are used 
 	this->shader_program = shader_program;
 	verts = vertices;
 	this->colours = colours;
@@ -24,13 +25,16 @@ Drawable::~Drawable()
 
 }
 
+//loads all vertex data into GPU memory
 void Drawable::load_into_memory()
 {
+	
 	glGenBuffers(1, &vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VALUES_PER_VERT * num_verts, verts, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	//load vertex colours into memory
 	if (colours_enabled)
 	{
 		glGenBuffers(1, &colour_buffer_id);
@@ -39,7 +43,7 @@ void Drawable::load_into_memory()
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-
+	//load vertex normals into memory
 	if (normals_enabled)
 	{
 		glGenBuffers(1, &normal_buffer_id);
@@ -48,6 +52,7 @@ void Drawable::load_into_memory()
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
+	//load vertex texture coords into memory
 	if (tex_enabled)
 	{
 		glGenBuffers(1, &tex_coords_buffer);
@@ -57,6 +62,7 @@ void Drawable::load_into_memory()
 	}
 }
 
+//draws a drawable object
 void Drawable::draw()
 {
 	shader_program.set_model_view_matrix(view_matrix * model_matrix);
@@ -96,13 +102,13 @@ void Drawable::draw()
 
 	glDrawArrays(GL_TRIANGLES, 0, num_verts);
 
+	//unbind everything
 	if (tex_enabled)
 		glBindTexture(GL_TEXTURE_2D, 0);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);
 
-	//reset matrices
+	//reset the model matrix
 	this->model_matrix = glm::mat4(1.0f);
 }
 
