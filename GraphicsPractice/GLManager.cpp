@@ -1,3 +1,5 @@
+/* by Aleksejs Loginovs - October 2018 */
+
 #include "GLManager.h"
 
 glm::vec3 GLManager::light_movement;

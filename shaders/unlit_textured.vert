@@ -1,3 +1,4 @@
+/* by Aleksejs Loginovs - October 2018 */
 #version 420
 
 layout(location = 0) in vec4 position;

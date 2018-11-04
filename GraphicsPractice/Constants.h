@@ -1,3 +1,5 @@
+/* by Aleksejs Loginovs - October 2018 */
+
 #pragma once
 #define VALUES_PER_VERT 4
 #define VALUES_PER_NORMAL 3

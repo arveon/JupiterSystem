@@ -1,3 +1,5 @@
+/* by Aleksejs Loginovs - October 2018 */
+
 #pragma once
 #include <GL/glew.h>
 #include "Drawable.h"

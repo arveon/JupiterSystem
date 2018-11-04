@@ -1,3 +1,5 @@
+/* by Aleksejs Loginovs - October 2018 */
+
 #include "ShaderManager.h"
 
 

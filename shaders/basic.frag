@@ -1,4 +1,5 @@
-// Minimal fragment shader with fixed output colour
+/* by Aleksejs Loginovs - October 2018 */
+//lit and textured fragment shader
 
 #version 420
 

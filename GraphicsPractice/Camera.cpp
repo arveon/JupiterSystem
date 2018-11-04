@@ -1,6 +1,6 @@
+/* by Aleksejs Loginovs - October 2018 */
+
 #include "Camera.h"
-
-
 
 void Camera::update(float dt, glm::vec2 cursor_deltas)
 {

@@ -2,6 +2,7 @@
 Example class to create a generic sphere object
 Resolution can be controlled by settign nuber of latitudes and longitudes
 Iain Martin November 2018
+modified by Aleksejs Loginovs - November 2018
 */
 
 #pragma once

@@ -1,3 +1,5 @@
+/* by Aleksejs Loginovs - October 2018 */
+
 #include "Shader.h"
 
 void Shader::init_shader(GLfloat aspect_ratio, int type)

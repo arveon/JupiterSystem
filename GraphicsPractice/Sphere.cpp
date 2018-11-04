@@ -2,6 +2,7 @@
 Example class to create a generic sphere object
 Resolution can be controlled by settign nuber of latitudes and longitudes
 Iain Martin October 2018
+modified by Aleksejs Loginovs - October 2018
 */
 
 #include "Sphere.h"

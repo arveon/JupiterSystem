@@ -1,3 +1,4 @@
+/* by Aleksejs Loginovs - October 2018 */
 // fragment shader that will only apply texture
 
 #version 420
